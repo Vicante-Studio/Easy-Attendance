@@ -60,7 +60,7 @@
 
 **Checklist:**
 
-- [ ] Build controller
+- [x] Build controller
 - [ ] Build routes
 - [ ] Register router
 - [ ] Test:
