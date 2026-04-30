@@ -35,9 +35,11 @@ export const updateSection = async (attendance_id: string, updatedAttendance: Ob
 
 // Delete Section
 export const deleteSection = async (attendance_id: string) => {
-  const { data, error } = await supabase.from("attendance_submissions").delete().eq("id", attendance_id).select().single()
+  const { data, error } = await supabase.from("attendance_submissions").delete().eq("id", attendance_id).select()
 
-  if(error) throw error
+  if(!data || data.length === 0){
+        throw new Error('Service not found')
+    }
 
-  return data
+  return true
 }
