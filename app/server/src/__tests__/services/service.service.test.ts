@@ -8,7 +8,7 @@ jest.mock('../../config/supabase', () => ({
 }))
 
 import supabase from '../../config/supabase';
-import { createService, getAllServices, getOneService, updateService, deleteService } from '../../services/service.service';
+import { handleCreateService, handleGetAllServices, handleGetOneService, handleUpdateService, handleDeleteService } from '../../services/service.service';
 
 
 const mockSupabase = supabase as any
@@ -34,7 +34,7 @@ describe('ServiceData Service', () => {
             })
         })
 
-        const result = await getAllServices()
+        const result = await handleGetAllServices()
 
         expect(result).toEqual(mockServices)
       })
@@ -50,7 +50,7 @@ describe('ServiceData Service', () => {
             })
         })
 
-        await expect(getAllServices()).rejects.toThrow('Something went wrong')
+        await expect(handleGetAllServices()).rejects.toThrow('Something went wrong')
       })
 
     })
@@ -72,7 +72,7 @@ describe('ServiceData Service', () => {
                 })
             })
 
-            const result = await getOneService('abc')
+            const result = await handleGetOneService('abc')
 
             expect(result).toEqual(mockService)
         })
@@ -89,7 +89,7 @@ describe('ServiceData Service', () => {
                 })
             })
 
-            await expect(getOneService('abc')).rejects.toThrow('Something went wrong')
+            await expect(handleGetOneService('abc')).rejects.toThrow('Something went wrong')
         })
     })
 
@@ -112,7 +112,7 @@ describe('ServiceData Service', () => {
                 })
             })
 
-            const result = await updateService("abc", { id: "abc", name: "First Service", date: "2025-04-20", is_active: false })
+            const result = await handleUpdateService("abc", { id: "abc", name: "First Service", date: "2025-04-20", is_active: false })
 
             expect(result).toEqual(updatedMockService)
         })
@@ -131,7 +131,7 @@ describe('ServiceData Service', () => {
                 })
             })
 
-            await expect(updateService('abc', { id: "abc", name: "First Service", date: "2025-04-20", is_active: false })).rejects.toThrow('Service could not be updated')
+            await expect(handleUpdateService('abc', { id: "abc", name: "First Service", date: "2025-04-20", is_active: false })).rejects.toThrow('Service could not be updated')
         })
 
     })
@@ -155,7 +155,7 @@ describe('ServiceData Service', () => {
                 })
             })
 
-            const result = await deleteService("abc")
+            const result = await handleDeleteService("abc")
 
             expect(result).toEqual(deletedMockService)
         })
@@ -174,7 +174,7 @@ describe('ServiceData Service', () => {
                 })
             })
 
-            await expect(deleteService('abc')).rejects.toThrow('Service could not be deleted')
+            await expect(handleDeleteService('abc')).rejects.toThrow('Service could not be deleted')
         })
 
     })
@@ -194,7 +194,7 @@ describe('ServiceData Service', () => {
                 })
             })
 
-            const result = await createService({ name: "First Service", date: "2025-04-20", is_active: false })
+            const result = await handleCreateService({ name: "First Service", date: "2025-04-20", is_active: false })
 
             expect(result).toEqual(createdService)
 
