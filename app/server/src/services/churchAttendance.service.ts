@@ -1,13 +1,13 @@
 import supabase from '../config/supabase.js';
 import { AttendanceType } from '../types/churchAttendance.type.js';
 
-// Post AttendanceSubmission
-export const postAttendanceSubmission = async (attendanceData: AttendanceType) => {
+// Create ChurchAttendanceSubmission
+export const createChurchAttendanceSubmission = async (attendanceData: AttendanceType) => {
   return await supabase.from("attendance_submissions").insert(attendanceData).select()
 }
 
 // Get all sections
-export const getAllAttendanceSubmissions = async () => {
+export const getAllChurchAttendanceSubmissions = async () => {
   const { data, error } = await supabase.from("attendance_submissions").select('*')
 
   if(error) throw error
@@ -16,7 +16,7 @@ export const getAllAttendanceSubmissions = async () => {
 }
 
 // Get one section
-export const getOneAttendanceSubmission = async (attendance_id: string) => {
+export const getOneChurchAttendanceSubmission = async (attendance_id: string) => {
   const { data, error } = await supabase.from("attendance_submissions").select('*').eq('id', attendance_id).single()
   
   if(error) throw error
@@ -25,7 +25,7 @@ export const getOneAttendanceSubmission = async (attendance_id: string) => {
 }
 
 // Update Section
-export const updateSection = async (attendance_id: string, updatedAttendance: Object) => {
+export const updateChurchAttendanceSubmission = async (attendance_id: string, updatedAttendance: Object) => {
   const { data, error } = await supabase.from("attendance_submissions").update(updatedAttendance).eq("id", attendance_id).select().single()
 
   if(error) throw error
@@ -34,7 +34,7 @@ export const updateSection = async (attendance_id: string, updatedAttendance: Ob
 }
 
 // Delete Section
-export const deleteSection = async (attendance_id: string) => {
+export const deleteChurchAttendanceSubmission = async (attendance_id: string) => {
   const { data, error } = await supabase.from("attendance_submissions").delete().eq("id", attendance_id).select()
 
   if(!data || data.length === 0){
