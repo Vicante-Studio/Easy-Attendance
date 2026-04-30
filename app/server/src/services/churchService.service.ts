@@ -46,4 +46,6 @@ export async function deleteService(service_id: string) {
     if(!data || data.length === 0){
         throw new Error('Service not found')
     }
+
+    return true
 }
