@@ -5,12 +5,12 @@ const router = express.Router()
 
 router.get('/', handleGetAllChurchAttendance)
 
-router.get('/:id', handleGetOneChurchAttendance)
+router.get('/:attendanceID', handleGetOneChurchAttendance)
 
 router.post('/', handleCreateChurchAttendance)
 
-router.put('/:id', handleUpdateChurchAttendance)
+router.put('/:attendanceID', handleUpdateChurchAttendance)
 
-router.delete('/:id', handleDeleteChurchAttendance)
+router.delete('/:attendanceID', handleDeleteChurchAttendance)
 
 export default router

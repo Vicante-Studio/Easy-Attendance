@@ -46,9 +46,9 @@ export const handleGetAllServices = async (req: Request, res: Response) => {
 export const handleGetOneService = async (req: Request, res: Response) => {
   try {
 
-        const { id } = req.params
+        const { serviceID } = req.params
 
-        const data = await getOneService(id as string)
+        const data = await getOneService(serviceID as string)
 
         return res.status(200).json(data)
 
@@ -67,10 +67,10 @@ export const handleGetOneService = async (req: Request, res: Response) => {
 export const handleUpdateService = async (req: Request, res: Response) => {
   try {
 
-        const { id } = req.params
+        const { serviceID } = req.params
         const updatedServiceData = req.body
 
-        const data = await updateService(id as string, updatedServiceData)
+        const data = await updateService(serviceID as string, updatedServiceData)
 
         return res.status(200).json(data)
 
@@ -89,9 +89,9 @@ export const handleUpdateService = async (req: Request, res: Response) => {
 export const handleDeleteService = async (req: Request, res: Response) => {
   try {
 
-        const { id } = req.params
+        const { serviceID } = req.params
 
-        await deleteService(id as string)
+        await deleteService(serviceID as string)
 
         return res.status(200).json({ message: "Service deleted successfully" }); 
 

@@ -5,12 +5,12 @@ const router = express.Router()
 
 router.get('/', handleGetAllServices)
 
-router.get('/:id', handleGetOneService)
+router.get('/:serviceID', handleGetOneService)
 
 router.post('/', handleCreateService)
 
-router.put('/:id', handleUpdateService)
+router.put('/:serviceID', handleUpdateService)
 
-router.delete('/:id', handleDeleteService)
+router.delete('/:serviceID', handleDeleteService)
 
 export default router
