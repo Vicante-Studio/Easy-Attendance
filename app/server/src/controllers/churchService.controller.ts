@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import supabase from '../config/supabase.js';
 import { createService, getAllServices, getOneService, updateService, deleteService } from '../services/churchService.service.js';
 
 // Handle Create Service
