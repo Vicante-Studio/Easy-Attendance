@@ -39,9 +39,11 @@ export async function updateService(service_id: string, updatedService: object) 
 
 // Delete Service
 export async function deleteService(service_id: string) {
-    const { data, error } = await supabase.from("services").delete().eq("id", service_id).select().single()
+    const { data, error } = await supabase.from("services").delete().eq("id", service_id).select()
 
     if(error) throw new Error(error.message);
 
-    return data
+    if(!data || data.length === 0){
+        throw new Error('Service not found')
+    }
 }

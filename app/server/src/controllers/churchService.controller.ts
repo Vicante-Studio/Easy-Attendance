@@ -91,9 +91,9 @@ export const handleDeleteService = async (req: Request, res: Response) => {
 
         const { id } = req.params
 
-        const data = await deleteService(id as string)
+        await deleteService(id as string)
 
-        return res.status(200).json(data)
+        return res.status(200).json({ message: "Service deleted successfully" }); 
 
   } catch (error) {
 

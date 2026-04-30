@@ -7,7 +7,7 @@ router.get('/', handleGetAllServices)
 
 router.get('/:id', handleGetOneService)
 
-router.post('', handleCreateService)
+router.post('/', handleCreateService)
 
 router.put('/:id', handleUpdateService)
 
