@@ -1,5 +1,5 @@
 import supabase from '../config/supabase.js';
-import { ServiceType } from '../types/service.type.js';
+import { ServiceType } from '../types/churchService.type.js';
 
 // Create Service
 export async function createService(serviceData: ServiceType) {

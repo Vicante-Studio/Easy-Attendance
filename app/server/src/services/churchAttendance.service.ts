@@ -1,5 +1,5 @@
 import supabase from '../config/supabase.js';
-import { AttendanceType } from '../types/attendance.type.js';
+import { AttendanceType } from '../types/churchAttendance.type.js';
 
 // Post AttendanceSubmission
 export const postAttendanceSubmission = async (attendanceData: AttendanceType) => {
