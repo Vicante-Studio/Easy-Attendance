@@ -87,7 +87,6 @@
   - [x] GET all
   - [x] GET by id
   - [x] POST
-  - [] PATCH activate
 
 **Definition of Done:**
 
@@ -135,7 +134,7 @@
 
 **Checklist:**
 
-- [ ] Test all routes
+- [x] Test all routes
 - [ ] Clean `.env`
 - [ ] Remove hardcoding
 - [ ] Fix weak points
