@@ -6,6 +6,7 @@ import { Field, FieldLabel, FieldError } from './ui/form/field'
 import { Input } from './ui/form/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/form/select'
 import axios from 'axios'
+import { api } from '@/lib/api'
 
 const formSchema = z.object({
     section: z.string().min(1, 'Section name is required'),
@@ -31,15 +32,29 @@ const CountForm = () => {
     })
 
     const selectedSection = useWatch({control, name: 'section' })
-    
+
     const resetForm = () => {
         reset()
     }
 
-    const onSubmit = (values: FormValues) => {
-        console.log(values)
+    const onSubmit = async (values: FormValues) => {
+        try {
+            const response = await api.post('/api/churchAttendance', values)
 
-        resetForm()
+            console.log("Success:", response.data)
+
+            resetForm()
+
+            alert("Submitted successfully!")
+
+        } catch (error) {
+            console.error("Submit failed:", error)
+
+            alert(
+            error?.response?.data?.message ||
+            "Something went wrong"
+            )
+                }
     }
 
   return (
