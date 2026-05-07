@@ -12,8 +12,9 @@
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
-    "noEmit": true,
     "jsx": "react-jsx",
+    "emitDeclarationOnly": true,
+
 
     /* Linting */
     "strict": true,
@@ -24,8 +25,16 @@
     "noUncheckedSideEffectImports": true,
 
     "forceConsistentCasingInFileNames": true,
+    
 
-    "composite": false
+    "composite": true,
+
+    /* Path aliases */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "ignoreDeprecations": "6.0"
   },
   "include": ["src"]
 }
