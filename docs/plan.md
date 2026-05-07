@@ -153,9 +153,9 @@
 
 **Checklist:**
 
-- [ ] Setup socket server
-- [ ] Emit `attendance:updated`
-- [ ] Test with browser
+- [x] Setup socket server
+- [x] Emit `attendance:updated`
+- [x] Test with browser
 
 **Definition of Done:**
 
