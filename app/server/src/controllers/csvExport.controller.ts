@@ -18,8 +18,8 @@ export const handleGenerateAttendanceCSV = async (req: Request, res: Response) =
     const filename = service ? `${service.name.replace(/\s+/g, '-')}-${service.date}.csv`: `attendance-${serviceID}.csv`
 
     // Set headers so browser treats it as a file download
-    res.setHeader('Content-Type', 'text.csv')
-    res.setHeader('Content-Disposition', 'attachment; filename="${filename}"')
+    res.setHeader('Content-Type', 'text/csv')
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`)
 
     res.send(csv)
 
