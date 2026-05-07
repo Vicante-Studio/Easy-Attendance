@@ -14,9 +14,7 @@ export const handleCreateChurchSection = async (req: Request, res: Response) => 
   } catch (error) {
 
     if(error instanceof Error){
-
       return res.status(500).json({ error: error.message })
-
     }
 
   }
@@ -34,9 +32,7 @@ export const handleGetAllChurchSection = async (req: Request, res: Response) => 
   } catch (error) {
 
       if(error instanceof Error){
-
         return res.status(500).json({ error: error.message })
-
       }
 
     }
@@ -56,9 +52,7 @@ export const handleGetOneChurchSection = async (req: Request, res: Response) => 
   } catch (error) {
 
       if(error instanceof Error){
-
         return res.status(500).json({ error: error.message })
-
       }
 
   }
@@ -79,9 +73,7 @@ export const handleUpdateChurchSection = async (req: Request, res: Response) => 
   } catch (error) {
 
       if(error instanceof Error){
-
         return res.status(500).json({ error: error.message })
-
       }
 
   }
@@ -101,9 +93,7 @@ export const handleDeleteChurchSection = async (req: Request, res: Response) => 
   } catch (error) {
 
       if(error instanceof Error){
-
         return res.status(500).json({ error: error.message })
-
       }
 
   }
