@@ -29,7 +29,7 @@ export const handleGetAllChurchSection = async (req: Request, res: Response) => 
 
       const data = await getAllChurchSections()
 
-      return res.status(201).json(data)
+      return res.status(200).json(data)
 
   } catch (error) {
 
@@ -51,7 +51,7 @@ export const handleGetOneChurchSection = async (req: Request, res: Response) => 
       
       const data = await getOneChurchSection(sectionID as string)
 
-      return res.status(201).json(data)
+      return res.status(200).json(data)
 
   } catch (error) {
 
@@ -74,7 +74,7 @@ export const handleUpdateChurchSection = async (req: Request, res: Response) => 
         
         const data = await updateChurchSection(sectionID as string, updatedChurchSectionData)
 
-        return res.status(201).json(data)
+        return res.status(200).json(data)
 
   } catch (error) {
 
@@ -96,7 +96,7 @@ export const handleDeleteChurchSection = async (req: Request, res: Response) => 
 
       await deleteChurchSection(sectionID as string)
 
-      return res.status(201).json({ message: 'Church Section deleted successfully' })
+      return res.status(200).json({ message: 'Church Section deleted successfully' })
 
   } catch (error) {
 
