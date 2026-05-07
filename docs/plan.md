@@ -225,11 +225,11 @@
 
 **Checklist:**
 
-- [ ] [ ] POST request
-- [ ] [ ] Loading state
-- [ ] [ ] Success state
-- [ ] [ ] Error handling
-- [ ] [ ] Reset logic
+- [ ] POST request
+- [ ] Loading state
+- [ ] Success state
+- [ ] Error handling
+- [ ] Reset logic
 
 **Definition of Done:**
 
