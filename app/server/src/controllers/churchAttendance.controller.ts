@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { createChurchAttendance, getAllChurchAttendance, getOneChurchAttendance, updateChurchAttendance, deleteChurchAttendance } from '../services/churchAttendance.service.js';
+import { getIO } from '../sockets/socket.js';
 
 // Handle Create Church Attendance
 export const handleCreateChurchAttendance = async (req: Request, res: Response) => {
@@ -9,18 +10,15 @@ export const handleCreateChurchAttendance = async (req: Request, res: Response) 
     
     const data = await createChurchAttendance(churchAttendanceData)
 
+    getIO().emit('attendance:updated', data)
+
     return res.status(201).json(data)
 
   } catch (error) {
-
     if(error instanceof Error){
-
       return res.status(500).json({ error: error.message })
-
     }
-
   }
-
 }
 
 // Handle Get All Attendance
@@ -29,18 +27,13 @@ export const handleGetAllChurchAttendance = async (req: Request, res: Response) 
 
       const data = await getAllChurchAttendance()
 
-      return res.status(201).json(data)
+      return res.status(200).json(data)
 
   } catch (error) {
-
       if(error instanceof Error){
-
         return res.status(500).json({ error: error.message })
-
       }
-
     }
-
 }
 
 // Handle Get One Attendance
@@ -51,18 +44,13 @@ export const handleGetOneChurchAttendance = async (req: Request, res: Response) 
       
       const data = await getOneChurchAttendance(attendanceID as string)
 
-      return res.status(201).json(data)
+      return res.status(200).json(data)
 
   } catch (error) {
-
       if(error instanceof Error){
-
         return res.status(500).json({ error: error.message })
-
       }
-
   }
-
 }
 
 // Handle Update Church Attendance
@@ -74,18 +62,15 @@ export const handleUpdateChurchAttendance = async (req: Request, res: Response) 
         
         const data = await updateChurchAttendance(attendanceID as string, updatedChurchAttendanceData)
 
-        return res.status(201).json(data)
+        getIO().emit('attendance:updated', data)
+
+        return res.status(200).json(data)
 
   } catch (error) {
-
       if(error instanceof Error){
-
         return res.status(500).json({ error: error.message })
-
       }
-
   }
-
 }
 
 // Handle Delete Church Attendance
@@ -96,16 +81,13 @@ export const handleDeleteChurchAttendance = async (req: Request, res: Response) 
 
       await deleteChurchAttendance(attendanceID as string)
 
-      return res.status(201).json({ message: 'Church Attendance deleted successfully' })
+      getIO().emit('attendance:updated', { deletedId: attendanceID })
+
+      return res.status(200).json({ message: 'Church Attendance deleted successfully' })
 
   } catch (error) {
-
       if(error instanceof Error){
-
         return res.status(500).json({ error: error.message })
-
       }
-
   }
-
 }
