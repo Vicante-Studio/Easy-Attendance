@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/form/input'
 import { Field, FieldLabel, FieldError } from '@/components/ui/form/field'
 import { Button } from '@/components/ui/button'
 import axios from 'axios'
-// import { api } from '@/lib/api'
+import { api } from '@/lib/api'
 
 interface IPFormProps {
     setIsConnected: (arg1: boolean) => void
@@ -29,8 +29,9 @@ const IpForm = ({ setIsConnected }: IPFormProps) => {
 
     const onSubmit = async (values: FormValues) => {
         try {
-        console.log(values)
-        // const response = await api.post('', values)
+        localStorage.setItem('ServerIP', values.serverIP)
+        
+        await api.get(`http://${values.serverIP}:8000/health`)
 
         // console.log(`Successfull connection: ${response}`)
 
@@ -41,8 +42,7 @@ const IpForm = ({ setIsConnected }: IPFormProps) => {
 
             if(axios.isAxiosError(error)){
                 alert(
-                    error?.response?.data?.message ||
-                    "Something went wrong"
+                    'Could not connect to server. Check the IP address and try again.'
                 )
             } else {
                 alert('Something went wrong')
