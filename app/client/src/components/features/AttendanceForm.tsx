@@ -1,24 +1,24 @@
 import { z } from 'zod'
-import { useForm, useWatch, type SubmitHandler } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button } from './ui/button'
-import { Field, FieldLabel, FieldError } from './ui/form/field'
-import { Input } from './ui/form/input'
+import { Button } from '../ui/button'
+import { Field, FieldLabel, FieldError } from '../ui/form/field'
+import { Input } from '../ui/form/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/form/select'
 import axios from 'axios'
 import { api } from '@/lib/api'
 
 const formSchema = z.object({
     section: z.string().min(1, 'Section name is required'),
-    men: z.coerce.number().min(0),
-    women: z.coerce.number().min(0),
-    children: z.coerce.number().min(0),
+    men: z.number().min(0),
+    women: z.number().min(0),
+    children: z.number().min(0),
     counterName: z.string().optional()
 })
 
 type FormValues = z.infer<typeof formSchema>
 
-const CountForm = () => {
+const AttendanceForm = () => {
 
    const { register, handleSubmit, formState: { errors, isSubmitting }, setValue, control, reset } = useForm<FormValues>({
         resolver: zodResolver(formSchema),
@@ -70,7 +70,7 @@ const CountForm = () => {
             </p>
         </article>
 
-        <form onSubmit={handleSubmit(onSubmit as SubmitHandler<FormValues>)} className='flex flex-col gap-6'>
+        <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-6'>
 
             {/* SECTION */}
             <Field>
@@ -113,7 +113,7 @@ const CountForm = () => {
 
             <Field>
                 <FieldLabel>Counter Name</FieldLabel>
-                <Input placeholder="Input your name" {...register('counterName')} />
+                <Input placeholder="Input your name" {...register('counterName')} className='h-12' />
                 <FieldError errors={[errors.counterName]} />
             </Field>
 
@@ -128,4 +128,4 @@ const CountForm = () => {
   )
 }
 
-export default CountForm
+export default AttendanceForm
