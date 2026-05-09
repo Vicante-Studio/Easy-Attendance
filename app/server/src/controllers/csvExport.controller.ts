@@ -1,6 +1,6 @@
 import e, { Request, Response } from 'express';
 import { generateAttendanceCSV } from '../services/csvExport.service.js';
-import supabase from '../config/supabase.js';
+import supabase from '../config/database.js';
 
 export const handleGenerateAttendanceCSV = async (req: Request, res: Response) => {
 

@@ -1,51 +1,59 @@
-import supabase from '../config/supabase.js';
-
+import db from '../config/database.js'
+import { v4 as uuidv4 } from 'uuid'
 
 // Create Section
-export const createChurchSection = async (sectionName: string) => {
-  const { data, error } = await supabase.from("sections").insert(sectionName).select()
+export function createChurchSection(sectionData: { name: string; display_order?: number }) {
+    const id = uuidv4()
 
-  if(error) throw new Error(error.message)
+    db.prepare(`
+        INSERT INTO sections (id, name, display_order)
+        VALUES (?, ?, ?)
+    `).run(id, sectionData.name, sectionData.display_order ?? 0)
 
-  return data
+    return db.prepare('SELECT * FROM sections WHERE id = ?').get(id)
 }
 
-// Get all sections
-export const getAllChurchSections = async () => {
-  const { data, error } = await supabase.from("sections").select('*')
-
-  if(error) throw new Error(error.message)
-
-  return data
+// Get All Sections
+export function getAllChurchSections() {
+    return db.prepare(`
+        SELECT * FROM sections
+        ORDER BY display_order ASC
+    `).all()
 }
 
-// Get one section
-export const getOneChurchSection = async (section_id: string) => {
-  const { data, error } = await supabase.from("sections").select('*').eq('id', section_id).single()
-  
-  if(error) throw new Error(error.message)
+// Get One Section
+export function getOneChurchSection(section_id: string) {
+    const section = db.prepare('SELECT * FROM sections WHERE id = ?').get(section_id)
 
-  return data
+    if (!section) throw new Error('Section not found')
+
+    return section
 }
 
 // Update Section
-export const updateChurchSection = async (section_id: string, updatedSection: Object) => {
-  const { data, error } = await supabase.from("sections").update(updatedSection).eq("id", section_id).select().single()
+export function updateChurchSection(section_id: string, updatedSection: { name?: string; display_order?: number }) {
+    const existing = db.prepare('SELECT * FROM sections WHERE id = ?').get(section_id)
+    if (!existing) throw new Error('Section not found')
 
-  if(error) throw new Error(error.message)
+    db.prepare(`
+        UPDATE sections
+        SET name = ?, display_order = ?
+        WHERE id = ?
+    `).run(
+        updatedSection.name ?? (existing as any).name,
+        updatedSection.display_order ?? (existing as any).display_order,
+        section_id
+    )
 
-  return data
+    return db.prepare('SELECT * FROM sections WHERE id = ?').get(section_id)
 }
 
 // Delete Section
-export const deleteChurchSection = async (section_id: string) => {
-  const { data, error } = await supabase.from("sections").delete().eq("id", section_id).select()
+export function deleteChurchSection(section_id: string) {
+    const existing = db.prepare('SELECT * FROM sections WHERE id = ?').get(section_id)
+    if (!existing) throw new Error('Section not found')
 
-  if(error) throw new Error(error.message)
+    db.prepare('DELETE FROM sections WHERE id = ?').run(section_id)
 
-  if(!data || data.length === 0){
-        throw new Error('Service not found')
-    }
-
-  return true
+    return true
 }

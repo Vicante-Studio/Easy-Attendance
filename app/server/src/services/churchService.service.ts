@@ -3,50 +3,78 @@ import { v4 as uuidv4 } from 'uuid';
 import { ServiceType } from '../types/churchService.type.js';
 
 // Create Service
-export async function createService(serviceData: ServiceType) {
-    const { data, error } = await supabase.from("services").insert(serviceData).select()
+export function createService(serviceData: ServiceType) {
+    const id = uuidv4()
 
-    if (error) throw new Error(error.message)
+    const stmt = db.prepare(`
+            INSERT INTO services (id, name, date)
+            VALUES (?, ?, ?)
+        `)
 
-    return data
+    stmt.run(id, serviceData.name, serviceData.date)
+
+    return db.prepare('SELECT * FROM services WHERE id = ?').get(id)
 }
 
 // Get All Services
 export async function getAllServices() {
-    const {data, error} = await supabase.from("services").select('*').order("date", { ascending: false })
-
-    if (error) throw new Error(error.message)
-
-    return data
+    return db.prepare(`
+        SELECT * FROM services
+        ORDER BY date DESC
+    `).all()
 }
 
 // Get One Services
 export async function getOneService(service_id: string) {
-    const { data, error } = await supabase.from("services").select('*').eq("id", service_id).single()
+    const service = db.prepare(`
+        SELECT * FROM services WHERE id = ?
+    `).get(service_id)
 
-    if(error) throw new Error(error.message);
+    if (!service) throw new Error('Service not found')
 
-    return data
+    return service
 }
 
 // Update Service
-export async function updateService(service_id: string, updatedService: object) {
-    const { data, error } = await supabase.from("services").update(updatedService).eq("id", service_id).select().single()
+export async function updateService(service_id: string, updatedService: {name?: string; date?: string }) {
+    const existing = db.prepare('SELECT * FROM services WHERE id = ?').get(service_id)
+    if (!existing) throw new Error('Service not found')
 
-    if(error) throw new Error(error.message);
+    const stmt = db.prepare(`
+        UPDATE services
+        SET name = ?, date = ?
+        WHERE id = ?
+    `)
 
-    return data
+    stmt.run(
+        updatedService.name ?? (existing as any).name,
+        updatedService.date ?? (existing as any).date,
+        service_id
+    )
+
+    return db.prepare('SELECT * FROM services WHERE id = ?').get(service_id)
+}
+
+// Activate Service — deactivates all others first
+export function activateService(service_id: string) {
+    const existing = db.prepare('SELECT * FROM services WHERE id = ?').get(service_id)
+    if (!existing) throw new Error('Service not found')
+
+    // Deactivate all
+    db.prepare('UPDATE services SET is_active = 0').run()
+
+    // Activate target
+    db.prepare('UPDATE services SET is_active = 1 WHERE id = ?').run(service_id)
+
+    return db.prepare('SELECT * FROM services WHERE id = ?').get(service_id)
 }
 
 // Delete Service
 export async function deleteService(service_id: string) {
-    const { data, error } = await supabase.from("services").delete().eq("id", service_id).select()
+    const existing = db.prepare('SELECT * FROM services WHERE id = ?').get(service_id)
+    if (!existing) throw new Error('Service not found')
 
-    if(error) throw new Error(error.message);
-
-    if(!data || data.length === 0){
-        throw new Error('Service not found')
-    }
+    db.prepare('DELETE FROM services WHERE id = ?').run(service_id)
 
     return true
 }

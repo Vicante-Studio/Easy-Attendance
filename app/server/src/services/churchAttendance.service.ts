@@ -1,51 +1,115 @@
-import supabase from '../config/supabase.js';
-import { AttendanceType } from '../types/churchAttendance.type.js';
+import db from '../config/database.js'
+import { v4 as uuidv4 } from 'uuid'
 
-// Create ChurchAttendance
-export const createChurchAttendance = async (attendanceData: AttendanceType) => {
-  const { data, error } = await supabase.from("attendance").insert(attendanceData).select()
+// Create Attendance
+export function createChurchAttendance(attendanceData: {
+    service_id: string
+    section_id: string
+    men: number
+    women: number
+    children: number
+    counter_name?: string
+}) {
+    const id = uuidv4()
 
-  if(error) throw new Error(error.message)
+    db.prepare(`
+        INSERT INTO attendance (id, service_id, section_id, men, women, children, counter_name)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(
+        id,
+        attendanceData.service_id,
+        attendanceData.section_id,
+        attendanceData.men,
+        attendanceData.women,
+        attendanceData.children,
+        attendanceData.counter_name ?? null
+    )
 
-  return data
+    return db.prepare('SELECT * FROM attendance WHERE id = ?').get(id)
 }
 
-// Get all sections
-export const getAllChurchAttendance = async () => {
-  const { data, error } = await supabase.from("attendance").select('*')
-
-  if(error) throw new Error(error.message)
-
-  return data
+// Get All Attendance
+export function getAllChurchAttendance() {
+    return db.prepare(`
+        SELECT 
+            a.*,
+            s.name as section_name
+        FROM attendance a
+        LEFT JOIN sections s ON a.section_id = s.id
+        ORDER BY a.submitted_at DESC
+    `).all()
 }
 
-// Get one section
-export const getOneChurchAttendance = async (attendance_id: string) => {
-  const { data, error } = await supabase.from("attendance").select('*').eq('id', attendance_id).single()
-  
-  if(error) throw new Error(error.message)
-
-  return data
+// Get Attendance By Service
+export function getAttendanceByService(service_id: string) {
+    return db.prepare(`
+        SELECT 
+            a.*,
+            s.name as section_name
+        FROM attendance a
+        LEFT JOIN sections s ON a.section_id = s.id
+        WHERE a.service_id = ?
+        ORDER BY a.submitted_at ASC
+    `).all(service_id)
 }
 
-// Update Section
-export const updateChurchAttendance = async (attendance_id: string, updatedAttendance: Object) => {
-  const { data, error } = await supabase.from("attendance").update(updatedAttendance).eq("id", attendance_id).select().single()
-
-  if(error) throw new Error(error.message)
-
-  return data
+// Get Totals By Service — aggregated per section
+export function getTotalsByService(service_id: string) {
+    return db.prepare(`
+        SELECT
+            s.name as section_name,
+            SUM(a.men) as men,
+            SUM(a.women) as women,
+            SUM(a.children) as children,
+            SUM(a.men + a.women + a.children) as total
+        FROM attendance a
+        LEFT JOIN sections s ON a.section_id = s.id
+        WHERE a.service_id = ?
+        GROUP BY a.section_id
+        ORDER BY s.display_order ASC
+    `).all(service_id)
 }
 
-// Delete Section
-export const deleteChurchAttendance = async (attendance_id: string) => {
-  const { data, error } = await supabase.from("attendance").delete().eq("id", attendance_id).select()
+// Get One Attendance
+export function getOneChurchAttendance(attendance_id: string) {
+    const record = db.prepare('SELECT * FROM attendance WHERE id = ?').get(attendance_id)
 
-  if(error) throw new Error(error.message)
+    if (!record) throw new Error('Attendance record not found')
 
-  if(!data || data.length === 0){
-        throw new Error('Service not found')
-    }
+    return record
+}
 
-  return true
+// Update Attendance
+export function updateChurchAttendance(attendance_id: string, updatedData: {
+    men?: number
+    women?: number
+    children?: number
+    counter_name?: string
+}) {
+    const existing = db.prepare('SELECT * FROM attendance WHERE id = ?').get(attendance_id) as any
+    if (!existing) throw new Error('Attendance record not found')
+
+    db.prepare(`
+        UPDATE attendance
+        SET men = ?, women = ?, children = ?, counter_name = ?
+        WHERE id = ?
+    `).run(
+        updatedData.men ?? existing.men,
+        updatedData.women ?? existing.women,
+        updatedData.children ?? existing.children,
+        updatedData.counter_name ?? existing.counter_name,
+        attendance_id
+    )
+
+    return db.prepare('SELECT * FROM attendance WHERE id = ?').get(attendance_id)
+}
+
+// Delete Attendance
+export function deleteChurchAttendance(attendance_id: string) {
+    const existing = db.prepare('SELECT * FROM attendance WHERE id = ?').get(attendance_id)
+    if (!existing) throw new Error('Attendance record not found')
+
+    db.prepare('DELETE FROM attendance WHERE id = ?').run(attendance_id)
+
+    return true
 }

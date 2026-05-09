@@ -1,29 +1,28 @@
 import { stringify } from 'csv-stringify'
-import supabase from '../config/supabase.js'
+import { getAttendanceByService } from './churchAttendance.service.js'
 
-export const generateAttendanceCSV = async (serviceID: string) => {
-  // Fetch all attendance for this service
-  //Join with sections so we get section name
-  const { data, error } = await supabase.from('attendance').select('*, sections(name)').eq('service_id', serviceID).order('created_at', { ascending: true })
+export const generateAttendanceCSV = async (serviceID: string): Promise<string> => {
 
-  if(error) throw new Error(error.message)
-  if(!data || data.length === 0) throw new Error('No attendance data found for this service')
+    // Use the SQLite service function directly
+    const data = getAttendanceByService(serviceID)
 
- // Shape data into rows
-  const rows = data.map((record: any) => ({
-    Section: record.sections?.name ?? 'Unknown',
-    Men: record.men,
-    Women: record.women,
-    Children: record.children,
-    Total: record.men + record.women + record.children,
-    'Submitted At': new Date(record.created_at).toLocaleString()
-  }))
+    if (!data || data.length === 0) {
+        throw new Error('No attendance data found for this service')
+    }
 
-  // Convert row to CSV string and return it
-  return new Promise((resolve, reject) => {
-    stringify(rows, { header: true }, (err, output) => {
-        if(err) reject(err)
+    const rows = (data as any[]).map((record) => ({
+        Section: record.section_name ?? 'Unknown',
+        Men: record.men,
+        Women: record.women,
+        Children: record.children,
+        Total: record.men + record.women + record.children,
+        'Submitted At': new Date(record.submitted_at).toLocaleString()
+    }))
+
+    return new Promise((resolve, reject) => {
+        stringify(rows, { header: true }, (err, output) => {
+            if (err) reject(err)
             else resolve(output)
+        })
     })
-  })
 }
