@@ -16,7 +16,7 @@ function getLocalIP() {
 }
 
 router.get('/api/network/ip', (req, res) => {
-    res.json({ ip: getLocalIP(), port: 5000 })
+    res.json({ ip: getLocalIP(), port: 8000 })
 })
 
 
