@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { useForm, useWatch } from 'react-hook-form'
+import { useForm, useWatch, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from './ui/button'
 import { Field, FieldLabel, FieldError } from './ui/form/field'
@@ -50,10 +50,14 @@ const CountForm = () => {
         } catch (error) {
             console.error("Submit failed:", error)
 
-            alert(
-            error?.response?.data?.message ||
-            "Something went wrong"
-            )
+                    if(axios.isAxiosError(error)){
+                        alert(
+                            error?.response?.data?.message ||
+                            "Something went wrong"
+                        )
+                    } else {
+                        alert('Something went wrong')
+                    }
                 }
     }
 
@@ -66,13 +70,13 @@ const CountForm = () => {
             </p>
         </article>
 
-        <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-6'>
+        <form onSubmit={handleSubmit(onSubmit as SubmitHandler<FormValues>)} className='flex flex-col gap-6'>
 
             {/* SECTION */}
             <Field>
                 <FieldLabel>Your Section</FieldLabel>
                 <Select
-                    onValueChange={(val) => setValue('section', val as 'For Sale' | 'For Rent')}
+                    onValueChange={(val) => setValue('section', val )}
                     value={selectedSection}
                 >
                     <SelectTrigger className="h-12">
@@ -114,8 +118,10 @@ const CountForm = () => {
             </Field>
 
 
-            <Button type='submit' className="h-12 mt-4">
-                Submit Count
+            <Button type='submit' className="h-12 mt-4" disabled={isSubmitting}>
+                {
+                    isSubmitting ? 'Submitting...' : 'Submit Count'
+                }
             </Button>
         </form>
     </main>
