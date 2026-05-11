@@ -33,14 +33,16 @@ const AdminPage = () => {
 
 
   return (
-    <main>
-      <h1>Counters - Open your browsers and go to:</h1>
+    <main className='w-full h-full flex flex-col items-center gap-6'>
+      <h1 className='text-xl text-center w-fit'>Counters - Open your browsers and go to:</h1>
 
-      <p>
-        {
-          ip ? `${ip}:${port}` : 'Loading ...'
-        }
-      </p>
+      <section className='border border-gray-300 bg-gray-200 p-20 rounded-lg'>
+        <p className='text-5xl'>
+          {
+            ip ? `${ip}:${port}` : 'Loading ...'
+          }
+        </p>
+      </section>
     </main>
   )
 }
