@@ -3,8 +3,10 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import AdminDashboard from './AdminDashboard'
 import { Button } from '@/components/ui/button'
+import { useNavigate } from 'react-router'
 
 const AdminPage = () => {
+  const navigate = useNavigate()
 
   const [ip, setIp] = useState<string>('')
   const [port, setPort] = useState<number>(8000)
@@ -47,8 +49,8 @@ const AdminPage = () => {
       </section>
 
       <section className='flex gap-4'>
-        <Button>Create Service</Button>
-        <Button>Create Section</Button>
+        <Button onClick={() => navigate('/createService')}>Create Service</Button>
+        <Button onClick={() => navigate('/createSection')}>Create Section</Button>
       </section>
 
       <AdminDashboard />
