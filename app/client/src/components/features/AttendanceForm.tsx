@@ -1,15 +1,15 @@
 import { z } from 'zod'
-import { useForm, useWatch } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '../ui/button'
 import { Field, FieldLabel, FieldError } from '../ui/form/field'
 import { Input } from '../ui/form/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/form/select'
 import axios from 'axios'
 import { api } from '@/lib/api'
 
 const formSchema = z.object({
     section: z.string().min(1, 'Section name is required'),
+    service: z.string().min(1, 'Service name is required'),
     men: z.number().min(0),
     women: z.number().min(0),
     children: z.number().min(0),
@@ -20,18 +20,17 @@ type FormValues = z.infer<typeof formSchema>
 
 const AttendanceForm = () => {
 
-   const { register, handleSubmit, formState: { errors, isSubmitting }, setValue, control, reset } = useForm<FormValues>({
+   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
         section: '',
+        service: '',
         men: 0,
         women: 0,
         children: 0,
         counterName: '',
         },
     })
-
-    const selectedSection = useWatch({control, name: 'section' })
 
     const resetForm = () => {
         reset()
@@ -74,20 +73,16 @@ const AttendanceForm = () => {
 
             {/* SECTION */}
             <Field>
-                <FieldLabel>Your Section</FieldLabel>
-                <Select
-                    onValueChange={(val) => setValue('section', val )}
-                    value={selectedSection}
-                >
-                    <SelectTrigger className="h-12">
-                        <SelectValue placeholder="Select section" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="section-A">Section A</SelectItem>
-                        <SelectItem value="section-B">Section B</SelectItem>
-                    </SelectContent>
-                </Select>
+                <FieldLabel>Section</FieldLabel>
+                <Input placeholder="What section are you in charge of?" {...register('section')} className='h-12' />
                 <FieldError errors={[errors.section]} />
+            </Field>
+
+            {/* SERVICE */}
+            <Field>
+                <FieldLabel>Service</FieldLabel>
+                <Input placeholder="What service is this?" {...register('service')} className='h-12' />
+                <FieldError errors={[errors.service]} />
             </Field>
 
             {/* MEN */}
