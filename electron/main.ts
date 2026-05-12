@@ -2,7 +2,7 @@ import { app, BrowserWindow } from 'electron'
 import { spawn, ChildProcess } from 'child_process'
 import path from 'path'
 
-const isDev = process.env.NODE_ENV === 'development'
+const isDev = !app.isPackaged
 
 let mainWindow: BrowserWindow | null = null
 let serverProcess: ChildProcess | null = null
@@ -36,7 +36,7 @@ function createWindow() {
 
     const url = isDev
         ? 'http://localhost:5173'
-        : 'http://localhost:5000'
+        : 'http://localhost:8000'
 
     mainWindow.loadURL(url)
 
@@ -79,3 +79,4 @@ app.on('before-quit', () => {
         serverProcess.kill()
     }
 })
+
