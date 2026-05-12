@@ -64,7 +64,7 @@ const SectionForm = () => {
 
             <Button type='submit' className="h-12 mt-4" disabled={isSubmitting}>
                 {
-                    isSubmitting ? 'Submitting...' : 'Submit Count'
+                    isSubmitting ? 'Submitting...' : 'Submit Section Name'
                 }
             </Button>
         </form>
