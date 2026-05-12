@@ -13,7 +13,6 @@ db.exec(`
     CREATE TABLE IF NOT EXISTS services(
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
-      date TEXT NOT NULL,
       is_active INTEGER DEFAULT 0,
       created_at TEXT DEFAULT CURRENT_TIMESTAMP
     );
