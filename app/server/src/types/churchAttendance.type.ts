@@ -4,5 +4,6 @@ export interface AttendanceType {
     men: number;
     women: number;
     children: number;
+    counter_name: string,
     device_label: string;
 }
