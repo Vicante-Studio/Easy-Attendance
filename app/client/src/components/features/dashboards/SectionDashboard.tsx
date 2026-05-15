@@ -36,15 +36,17 @@ const SectionDashboard = () => {
 
     console.log(sectionData)
   return (
-    <section>
-      <h2 className='text-xl'>Sections</h2>
+    <section className='w-[70%] flex flex-col items-center gap-8 border p-2 rounded-md'>
+      <h2 className='text-xl font-bold'>Sections</h2>
 
-      <div>
+      <div className='w-full flex flex-col gap-2'>
         {
             sectionData.map(section => (
-                <p>
-                    {section?.name}
-                </p>
+                <div className='flex justify-between items-center border p-2 rounded-md'>
+                    <p>
+                        {section?.name}
+                    </p>
+                </div>
             ))
         }
       </div>
