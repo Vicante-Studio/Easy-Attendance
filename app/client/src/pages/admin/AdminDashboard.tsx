@@ -59,7 +59,6 @@ const AdminDashboard = () => {
                 <TableCell>{section.sectionName}</TableCell>
                 <TableCell>{section.men}</TableCell>
                 <TableCell>{section.men}</TableCell>
-
                 <TableCell>{section.women}</TableCell>
                 <TableCell>{section.children}</TableCell>
                 <TableCell className="font-bold">{total}</TableCell>
