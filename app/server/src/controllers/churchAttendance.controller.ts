@@ -1,12 +1,23 @@
 import { Request, Response } from 'express';
 import { createChurchAttendance, getAllChurchAttendance, getOneChurchAttendance, updateChurchAttendance, deleteChurchAttendance } from '../services/churchAttendance.service.js';
 import { getIO } from '../sockets/socket.js';
+import { getSectionIdByName } from '../services/getSectionID.service.js';
 
 // Handle Create Church Attendance
 export const handleCreateChurchAttendance = async (req: Request, res: Response) => {
   try {
+    const { service_id, section_name, men, women, children, counter_name } = req.body
 
-    const churchAttendanceData = req.body
+    const section_id = await getSectionIdByName(section_name)
+
+    const churchAttendanceData = {
+      service_id,
+      section_id, 
+      men,
+      women,
+      children,
+      counter_name
+    }
     
     const data = await createChurchAttendance(churchAttendanceData)
 
