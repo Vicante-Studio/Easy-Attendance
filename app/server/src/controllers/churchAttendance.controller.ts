@@ -6,7 +6,7 @@ import { getSectionIdByName } from '../services/getSectionID.service.js';
 // Handle Create Church Attendance
 export const handleCreateChurchAttendance = async (req: Request, res: Response) => {
   try {
-    const { service_id, section_name, men, women, children, counter_name } = req.body
+    const { section_name, men, women, children, counter_name } = req.body
 
     // Find Section ID first
     const section_id = await getSectionIdByName(section_name)
@@ -18,7 +18,6 @@ export const handleCreateChurchAttendance = async (req: Request, res: Response) 
     }
 
     const churchAttendanceData = {
-      service_id,
       section_id, 
       men,
       women,

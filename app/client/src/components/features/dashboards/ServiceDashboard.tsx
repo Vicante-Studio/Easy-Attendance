@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
@@ -49,13 +50,13 @@ const ServiceDashboard = () => {
 
                     {
                         service.is_active ? (
-                            <p className='border px-4 py-2 bg-green-200 text-green-700 rounded-md'>
+                            <Button onClick={} className='border px-4 py-2 bg-green-200 text-green-700 rounded-md'>
                                 Active
-                            </p>
+                            </Button>
                         ) : (
-                            <p className='border px-4 py-2 bg-red-200 text-red-700 rounded-md'>
+                            <Button className='border px-4 py-2 bg-red-200 text-red-700 rounded-md'>
                                 Inactive
-                            </p>
+                            </Button>
                         )
                     }
                 </div>

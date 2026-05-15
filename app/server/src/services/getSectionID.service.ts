@@ -6,7 +6,7 @@ export const getSectionIdByName = async (sectionName: string) => {
         FROM sections
         WHERE name = ?
     `)
-  const section = stmt.get(sectionName) as { id: string } | undefined
+  const section = await stmt.get(sectionName) as { id: string } | undefined
 
   if(!section || section === undefined){
     throw new Error('Cannot get section ID')

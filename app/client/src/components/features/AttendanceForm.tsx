@@ -9,7 +9,6 @@ import { api } from '@/lib/api'
 
 const formSchema = z.object({
     section: z.string().min(1, 'Section name is required'),
-    service: z.string().min(1, 'Service name is required'),
     men: z.number().min(0),
     women: z.number().min(0),
     children: z.number().min(0),
@@ -24,7 +23,6 @@ const AttendanceForm = () => {
         resolver: zodResolver(formSchema),
         defaultValues: {
         section: '',
-        service: '',
         men: 0,
         women: 0,
         children: 0,
@@ -76,13 +74,6 @@ const AttendanceForm = () => {
                 <FieldLabel>Section</FieldLabel>
                 <Input placeholder="What section are you in charge of?" {...register('section')} className='h-12' />
                 <FieldError errors={[errors.section]} />
-            </Field>
-
-            {/* SERVICE */}
-            <Field>
-                <FieldLabel>Service</FieldLabel>
-                <Input placeholder="What service is this?" {...register('service')} className='h-12' />
-                <FieldError errors={[errors.service]} />
             </Field>
 
             {/* MEN */}
