@@ -19,7 +19,7 @@ db.exec(`
 
     CREATE TABLE IF NOT EXISTS sections (
         id TEXT PRIMARY KEY,
-        name TEXT NOT NULL,
+        name TEXT NOT NULL UNIQUE,
         display_order INTEGER DEFAULT 0,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP
     );
