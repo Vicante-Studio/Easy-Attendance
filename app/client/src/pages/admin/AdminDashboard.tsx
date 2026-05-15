@@ -33,6 +33,7 @@ const AdminDashboard = () => {
 
     fetchCurrentService()
   }, [])
+  
   return (
     <main className="p-6">
       <h2 className="text-xl font-semibold mb-4">Attendance Dashboard</h2>

@@ -6,6 +6,7 @@ import { Field, FieldLabel, FieldError } from '../ui/form/field'
 import { Input } from '../ui/form/input'
 import axios from 'axios'
 import { api } from '@/lib/api'
+import { useNavigate } from 'react-router'
 
 const formSchema = z.object({
     name: z.string().min(1, 'Section name is required')
@@ -14,6 +15,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 const ServiceForm = () => {
+   const navigate = useNavigate()
 
    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<FormValues>({
         resolver: zodResolver(formSchema),
@@ -34,7 +36,9 @@ const ServiceForm = () => {
 
             resetForm()
 
-            alert("Submitted successfully!")
+            // TODO: Add success message card before navigating to adminPage
+            
+            navigate('/adminPage')
 
         } catch (error) {
             console.error("Submit failed:", error)

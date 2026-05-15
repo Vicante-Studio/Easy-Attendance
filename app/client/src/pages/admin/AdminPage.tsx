@@ -5,6 +5,7 @@ import AdminDashboard from './AdminDashboard'
 import { Button } from '@/components/ui/button'
 import { useNavigate } from 'react-router'
 import SectionDashboard from '@/components/features/dashboards/SectionDashboard'
+import ServiceDashboard from '@/components/features/dashboards/ServiceDashboard'
 
 const AdminPage = () => {
   const navigate = useNavigate()
@@ -54,8 +55,12 @@ const AdminPage = () => {
         <Button onClick={() => navigate('/createSection')}>Create Section</Button>
       </section>
 
-      <section>
+      <section className='w-full flex flex-col items-center' >
         <SectionDashboard />
+      </section>
+
+      <section className='w-full flex flex-col items-center'>
+        <ServiceDashboard />
       </section>
 
       <AdminDashboard />
