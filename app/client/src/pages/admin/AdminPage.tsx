@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import AdminDashboard from './AdminDashboard'
 import { Button } from '@/components/ui/button'
 import { useNavigate } from 'react-router'
+import SectionDashboard from '@/components/features/dashboards/SectionDashboard'
 
 const AdminPage = () => {
   const navigate = useNavigate()
@@ -51,6 +52,10 @@ const AdminPage = () => {
       <section className='flex gap-4'>
         <Button onClick={() => navigate('/createService')}>Create Service</Button>
         <Button onClick={() => navigate('/createSection')}>Create Section</Button>
+      </section>
+
+      <section>
+        <SectionDashboard />
       </section>
 
       <AdminDashboard />
