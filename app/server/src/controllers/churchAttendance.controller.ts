@@ -8,7 +8,14 @@ export const handleCreateChurchAttendance = async (req: Request, res: Response) 
   try {
     const { service_id, section_name, men, women, children, counter_name } = req.body
 
+    // Find Section ID first
     const section_id = await getSectionIdByName(section_name)
+
+    if (!section_id) {
+      return res.status(404).json({
+        error: 'Section not found',
+      })
+    }
 
     const churchAttendanceData = {
       service_id,
