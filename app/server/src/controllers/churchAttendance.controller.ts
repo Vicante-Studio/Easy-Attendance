@@ -27,7 +27,7 @@ export const handleCreateChurchAttendance = async (req: Request, res: Response) 
     
     const data = await createChurchAttendance(churchAttendanceData)
 
-    getIO().emit('attendance:updated', data)
+    getIO().emit('attendance:updated')
 
     return res.status(201).json(data)
 
@@ -79,7 +79,7 @@ export const handleUpdateChurchAttendance = async (req: Request, res: Response) 
         
         const data = await updateChurchAttendance(attendanceID as string, updatedChurchAttendanceData)
 
-        getIO().emit('attendance:updated', data)
+        getIO().emit('attendance:updated')
 
         return res.status(200).json(data)
 
@@ -98,7 +98,7 @@ export const handleDeleteChurchAttendance = async (req: Request, res: Response) 
 
       await deleteChurchAttendance(attendanceID as string)
 
-      getIO().emit('attendance:updated', { deletedId: attendanceID })
+      getIO().emit('attendance:updated')
 
       return res.status(200).json({ message: 'Church Attendance deleted successfully' })
 
