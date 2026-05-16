@@ -54,20 +54,6 @@ export async function updateService(service_id: string, updatedService: {name?: 
     return db.prepare('SELECT * FROM services WHERE id = ?').get(service_id)
 }
 
-// Activate Service — deactivates all others first
-export function activateService(service_id: string) {
-    const existing = db.prepare('SELECT * FROM services WHERE id = ?').get(service_id)
-    if (!existing) throw new Error('Service not found')
-
-    // Deactivate all
-    db.prepare('UPDATE services SET is_active = 0').run()
-
-    // Activate target
-    db.prepare('UPDATE services SET is_active = 1 WHERE id = ?').run(service_id)
-
-    return db.prepare('SELECT * FROM services WHERE id = ?').get(service_id)
-}
-
 // Delete Service
 export async function deleteService(service_id: string) {
     const existing = db.prepare('SELECT * FROM services WHERE id = ?').get(service_id)
@@ -78,16 +64,27 @@ export async function deleteService(service_id: string) {
     return true
 }
 
-// Toggle Activation state
-export const toggleServiceActivation = async (service_id: string) => {
-  const stmt = db.prepare(`
+// Activate one service
+export const activateService = async (service_id: string) => {
+  const deactivateAllStmt = db.prepare(`
       UPDATE services
-      SET is_active = CASE
-        WHEN is_active = 1 THEN 0
-        ELSE 1
-      END
-      WHERE id = ?
+      SET is_active = 0
     `)
 
-    return stmt.run(service_id)
+  const activateOneStmt = db.prepare(`
+        UPDATE services
+        SET is_active = 1
+        WHERE id = ?
+    `)
+
+  const transaction = db.transaction((id: string) => {
+    deactivateAllStmt.run()
+    activateOneStmt.run(id)
+  })
+
+  transaction(service_id)
+
+    return {
+        message: 'Service activated successfuly'
+    }
 }

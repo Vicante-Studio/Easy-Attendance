@@ -36,12 +36,12 @@ const ServiceDashboard = () => {
     const toggleActivation = async(service_id: string) => {
         try {
 
-            const res = await api.put(`/api/churchService/toggleActivation/${service_id}`)
+            const res = await api.put(`/api/churchService/activate/${service_id}`)
 
             console.log(res.data)
 
             fetchServices()
-            
+
         } catch (error) {
             if(axios.isAxiosError(error)){
                         alert(

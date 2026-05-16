@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createService, getAllServices, getOneService, updateService, deleteService, toggleServiceActivation } from '../services/churchService.service.js';
+import { createService, getAllServices, getOneService, updateService, deleteService, activateService } from '../services/churchService.service.js';
 
 // Handle Create Service
 export const handleCreateService = async (req: Request, res: Response) => {
@@ -106,13 +106,13 @@ export const handleDeleteService = async (req: Request, res: Response) => {
   
 }
 
-export const handleToggleServiceActivtion = async (req: Request, res: Response) => {
+export const handleActivateService = async (req: Request, res: Response) => {
   try {
     const { service_id } = req.params
 
-    await toggleServiceActivation(service_id as string)
+    const data = await activateService(service_id as string)
 
-    return res.status(200).json({ message: 'Service activation toggled'})
+    return res.status(200).json(data)
 
   } catch (error) {
 
