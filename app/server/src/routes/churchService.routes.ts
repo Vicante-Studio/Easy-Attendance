@@ -1,16 +1,18 @@
 import express from 'express';
-import { handleCreateService, handleGetAllServices, handleGetOneService, handleUpdateService, handleDeleteService } from '../controllers/churchService.controller.js';
+import { handleCreateService, handleGetAllServices, handleGetOneService, handleUpdateService, handleDeleteService, handleToggleServiceActivtion } from '../controllers/churchService.controller.js';
 
 const router = express.Router()
 
 router.get('/', handleGetAllServices)
 
-router.get('/:serviceID', handleGetOneService)
+router.get('/:service_id', handleGetOneService)
 
 router.post('/', handleCreateService)
 
-router.put('/:serviceID', handleUpdateService)
+router.put('/:service_id', handleUpdateService)
 
-router.delete('/:serviceID', handleDeleteService)
+router.delete('/:service_id', handleDeleteService)
+
+router.put('/:service_id', handleToggleServiceActivtion)
 
 export default router

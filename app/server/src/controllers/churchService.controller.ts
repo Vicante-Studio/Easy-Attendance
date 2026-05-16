@@ -46,9 +46,9 @@ export const handleGetAllServices = async (req: Request, res: Response) => {
 export const handleGetOneService = async (req: Request, res: Response) => {
   try {
 
-        const { serviceID } = req.params
+        const { service_id } = req.params
 
-        const data = await getOneService(serviceID as string)
+        const data = await getOneService(service_id as string)
 
         return res.status(200).json(data)
 
@@ -67,10 +67,10 @@ export const handleGetOneService = async (req: Request, res: Response) => {
 export const handleUpdateService = async (req: Request, res: Response) => {
   try {
 
-        const { serviceID } = req.params
+        const { service_id } = req.params
         const updatedServiceData = req.body
 
-        const data = await updateService(serviceID as string, updatedServiceData)
+        const data = await updateService(service_id as string, updatedServiceData)
 
         return res.status(200).json(data)
 
@@ -89,9 +89,9 @@ export const handleUpdateService = async (req: Request, res: Response) => {
 export const handleDeleteService = async (req: Request, res: Response) => {
   try {
 
-        const { serviceID } = req.params
+        const { service_id } = req.params
 
-        await deleteService(serviceID as string)
+        await deleteService(service_id as string)
 
         return res.status(200).json({ message: "Service deleted successfully" }); 
 
@@ -113,7 +113,7 @@ export const handleToggleServiceActivtion = async (req: Request, res: Response) 
     await toggleServiceActivation(service_id as string)
 
     return res.status(200).json({ message: 'Service activation toggled'})
-    
+
   } catch (error) {
 
     if(error instanceof Error){
