@@ -10,7 +10,7 @@ export const handleCreateService = async (req: Request, res: Response) => {
 
         const data = await createService(serviceData)
 
-        getIO().emit('service:created', data)
+        getIO().emit('services:changed')
 
         return res.status(201).json(data)
 
@@ -75,7 +75,7 @@ export const handleUpdateService = async (req: Request, res: Response) => {
 
         const data = await updateService(service_id as string, updatedServiceData)
 
-        getIO().emit('service:updated', data)
+        getIO().emit('services:changed')
 
         return res.status(200).json(data)
 
@@ -98,7 +98,7 @@ export const handleDeleteService = async (req: Request, res: Response) => {
 
         await deleteService(service_id as string)
 
-        getIO().emit('service:deleted', { service_id })
+        getIO().emit('service:changed')
 
         return res.status(200).json({ message: "Service deleted successfully" }); 
 
@@ -119,7 +119,7 @@ export const handleActivateService = async (req: Request, res: Response) => {
 
     const data = await activateService(service_id as string)
 
-    getIO().emit('service:activated', data)
+    getIO().emit('services:changed')
 
     return res.status(200).json(data)
 

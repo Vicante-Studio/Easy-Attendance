@@ -99,7 +99,8 @@ export const activateService = async (service_id: string) => {
 
   transaction(service_id)
 
-    return {
-        message: 'Service activated successfuly'
-    }
+  return db.prepare(`
+      SELECT * FROM services
+      WHERE id = ?
+  `).get(service_id)
 }
