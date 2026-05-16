@@ -24,7 +24,7 @@ export async function getAllServices() {
     `).all()
 }
 
-// Get One Services
+// Get One Service
 export async function getOneService(service_id: string) {
     const service = db.prepare(`
         SELECT * FROM services WHERE id = ?
@@ -38,12 +38,16 @@ export async function getOneService(service_id: string) {
 //Get active Service
 export const getActiveService = async () => {
 
-  return db.prepare(`
+  const activeService = db.prepare(`
         SELECT * FROM services
         WHERE is_active = 1
         LIMIT 1
     `).get()
-    
+
+    if(!activeService) throw new Error('Active Service not found')
+
+    return activeService    
+
 }
 
 // Update Service

@@ -5,9 +5,9 @@ const router = express.Router()
 
 router.get('/', handleGetAllServices)
 
-router.get('/:service_id', handleGetOneService)
-
 router.get('/active', handleGetActiveService)
+
+router.get('/:service_id', handleGetOneService)
 
 router.post('/', handleCreateService)
 

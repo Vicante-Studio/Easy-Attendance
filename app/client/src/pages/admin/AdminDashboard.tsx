@@ -25,13 +25,13 @@ const AdminDashboard = () => {
   }, [])
 
   useEffect(() => {
-    const fetchCurrentService = async() => {
-      const res = await api.get('/api/churchService')
+    const fetchActiveService = async() => {
+      const res = await api.get('/api/churchService/active')
 
-      setCurrentService(res.data[0].name)
+      setCurrentService(res.data.name)
     }
 
-    fetchCurrentService()
+    fetchActiveService()
   }, [])
   
   return (
