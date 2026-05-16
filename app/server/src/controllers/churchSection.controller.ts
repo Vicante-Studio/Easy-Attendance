@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { createChurchSection, getAllChurchSections, getOneChurchSection, updateChurchSection, deleteChurchSection } from '../services/churchSection.service.js';
+import { getIO } from '../sockets/socket.js';
 
 // Handle Create Church Section
 export const handleCreateChurchSection = async (req: Request, res: Response) => {
@@ -8,6 +9,9 @@ export const handleCreateChurchSection = async (req: Request, res: Response) => 
     const churchSectionData = req.body
     
     const data = await createChurchSection(churchSectionData)
+    
+    getIO().emit('sections:changed')
+    
 
     return res.status(201).json(data)
 
@@ -68,6 +72,8 @@ export const handleUpdateChurchSection = async (req: Request, res: Response) => 
         
         const data = await updateChurchSection(sectionID as string, updatedChurchSectionData)
 
+        getIO().emit('sections:changed')
+
         return res.status(200).json(data)
 
   } catch (error) {
@@ -87,6 +93,8 @@ export const handleDeleteChurchSection = async (req: Request, res: Response) => 
       const { sectionID } = req.params
 
       await deleteChurchSection(sectionID as string)
+
+      getIO().emit('sections:changed')
 
       return res.status(200).json({ message: 'Church Section deleted successfully' })
 
