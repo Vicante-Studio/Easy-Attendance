@@ -35,6 +35,17 @@ export async function getOneService(service_id: string) {
     return service
 }
 
+//Get active Service
+export const getActiveService = async () => {
+
+  return db.prepare(`
+        SELECT * FROM services
+        WHERE is_active = 1
+        LIMIT 1
+    `).get()
+    
+}
+
 // Update Service
 export async function updateService(service_id: string, updatedService: {name?: string }) {
     const existing = db.prepare('SELECT * FROM services WHERE id = ?').get(service_id)
