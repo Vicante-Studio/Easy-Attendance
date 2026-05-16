@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createService, getAllServices, getOneService, updateService, deleteService, activateService } from '../services/churchService.service.js';
+import { createService, getAllServices, getOneService, updateService, deleteService, activateService, getActiveService } from '../services/churchService.service.js';
 
 // Handle Create Service
 export const handleCreateService = async (req: Request, res: Response) => {
@@ -122,4 +122,20 @@ export const handleActivateService = async (req: Request, res: Response) => {
 
       }
   }
+}
+
+export const handleGetActiveService = async (req: Request, res: Response) => {
+      try {
+
+            const activeService =  await getActiveService()
+
+            res.status(200).json(activeService)
+            
+      } catch (error) {
+            if(error instanceof Error){
+
+                  return res.status(500).json({error: error.message})
+
+            }
+      }
 }
