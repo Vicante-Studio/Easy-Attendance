@@ -1,6 +1,8 @@
+import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 
 interface Section {
     id: string
@@ -10,6 +12,8 @@ interface Section {
 }
 
 const SectionDashboard = () => {
+    const navigate = useNavigate()
+    
     const [sectionData, setSectionData] = useState<Section[]>([])
 
     useEffect(() => {
@@ -50,6 +54,8 @@ const SectionDashboard = () => {
             ))
         }
       </div>
+
+      <Button onClick={() => navigate('/createSection')}>Add Section</Button>
     </section>
   )
 }

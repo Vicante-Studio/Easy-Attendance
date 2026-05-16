@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 
 interface Service {
     id: string
@@ -11,6 +12,7 @@ interface Service {
 }
 
 const ServiceDashboard = () => {
+    const navigate = useNavigate()
     const [serviceData, setServiceData] = useState<Service[]>([])
 
     useEffect(() => {
@@ -63,6 +65,8 @@ const ServiceDashboard = () => {
             ))
         }
       </div>
+
+      <Button onClick={() => navigate('/createService')}>Add Service</Button>
     </section>
   )
 }

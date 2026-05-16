@@ -2,13 +2,10 @@ import { api } from '@/lib/api'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import AdminDashboard from './AdminDashboard'
-import { Button } from '@/components/ui/button'
-import { useNavigate } from 'react-router'
 import SectionDashboard from '@/components/features/dashboards/SectionDashboard'
 import ServiceDashboard from '@/components/features/dashboards/ServiceDashboard'
 
 const AdminPage = () => {
-  const navigate = useNavigate()
 
   const [ip, setIp] = useState<string>('')
   const [port, setPort] = useState<number>(8000)
@@ -48,11 +45,6 @@ const AdminPage = () => {
             ip ? `${ip}:${port}` : 'Loading ...'
           }
         </p>
-      </section>
-
-      <section className='flex gap-4'>
-        <Button onClick={() => navigate('/createService')}>Create Service</Button>
-        <Button onClick={() => navigate('/createSection')}>Create Section</Button>
       </section>
 
       <section className='w-full flex flex-col items-center' >
