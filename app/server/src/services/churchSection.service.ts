@@ -57,3 +57,19 @@ export function deleteChurchSection(section_id: string) {
 
     return true
 }
+
+// Get section ID by name
+export const getSectionIdByName = async (sectionName: string) => {
+  const stmt = db.prepare(`
+        SELECT id
+        FROM sections
+        WHERE name = ?
+    `)
+  const section = await stmt.get(sectionName) as { id: string } | undefined
+
+  if(!section || section === undefined){
+    throw new Error('Cannot get section ID')
+  }
+
+  return section.id
+}

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { createChurchAttendance, getAllChurchAttendance, getOneChurchAttendance, updateChurchAttendance, deleteChurchAttendance } from '../services/churchAttendance.service.js';
 import { getIO } from '../sockets/socket.js';
-import { getSectionIdByName } from '../services/getSectionID.service.js';
+import { getSectionIdByName } from '../services/churchSection.service.js';
 
 // Handle Create Church Attendance
 export const handleCreateChurchAttendance = async (req: Request, res: Response) => {
