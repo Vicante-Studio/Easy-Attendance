@@ -12,7 +12,7 @@
         "dev": "concurrently -n SERVER,CLIENT,ELECTRON -c green,blue,yellow \"npm run dev:server\" \"npm run dev:client\" \"npm run dev:electron\"",
         "dev:server": "cd app/server && npm run dev",
         "dev:client": "cd app/client && npm run dev",
-        "dev:electron": "wait-on http://localhost:5173 && cross-env NODE_ENV=development electron .",
+        "dev:electron": "npm run build:electron && wait-on http://localhost:5173 && cross-env NODE_ENV=development electron .",
         "build:electron": "esbuild electron/main.ts --bundle --platform=node --target=node18 --external:electron --format=cjs --outfile=electron/main.js",
         "build": "npm run build:client && npm run build:server",
         "build:client": "cd app/client && npm run build",
