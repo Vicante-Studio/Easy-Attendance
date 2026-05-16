@@ -1,4 +1,5 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { useActiveService } from '@/hooks/useActiveService'
 import { api } from '@/lib/api'
 import { useEffect, useState } from 'react'
 
@@ -12,7 +13,7 @@ type SectionStats = {
 
 const AdminDashboard = () => {
   const [data, setData] = useState<SectionStats[]>([])
-  const [currentService, setCurrentService] = useState('')
+  const { activeService } = useActiveService()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,20 +25,11 @@ const AdminDashboard = () => {
     fetchData()
   }, [])
 
-  useEffect(() => {
-    const fetchActiveService = async() => {
-      const res = await api.get('/api/churchService/active')
-
-      setCurrentService(res.data.name)
-    }
-
-    fetchActiveService()
-  }, [])
   
   return (
     <main className="p-6">
       <h2 className="text-xl font-semibold mb-4">Attendance Dashboard</h2>
-      <h3 className='font-medium text-2xl'>{`Current Service: ${currentService}`}</h3>
+      <h3 className='font-medium text-2xl'>{`Current Service: ${activeService?.name}`}</h3>
 
       <Table>
         <TableHeader>

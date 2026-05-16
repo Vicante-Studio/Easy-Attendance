@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { createService, getAllServices, getOneService, updateService, deleteService, activateService, getActiveService } from '../services/churchService.service.js';
+import { getIO } from '../sockets/socket.js';
 
 // Handle Create Service
 export const handleCreateService = async (req: Request, res: Response) => {
@@ -8,6 +9,8 @@ export const handleCreateService = async (req: Request, res: Response) => {
         const serviceData = req.body;
 
         const data = await createService(serviceData)
+
+        getIO().emit('service:created', data)
 
         return res.status(201).json(data)
 
@@ -72,6 +75,8 @@ export const handleUpdateService = async (req: Request, res: Response) => {
 
         const data = await updateService(service_id as string, updatedServiceData)
 
+        getIO().emit('service:updated', data)
+
         return res.status(200).json(data)
 
   } catch (error) {
@@ -93,6 +98,8 @@ export const handleDeleteService = async (req: Request, res: Response) => {
 
         await deleteService(service_id as string)
 
+        getIO().emit('service:deleted', { service_id })
+
         return res.status(200).json({ message: "Service deleted successfully" }); 
 
   } catch (error) {
@@ -112,6 +119,8 @@ export const handleActivateService = async (req: Request, res: Response) => {
 
     const data = await activateService(service_id as string)
 
+    getIO().emit('service:activated', data)
+
     return res.status(200).json(data)
 
   } catch (error) {
@@ -130,7 +139,7 @@ export const handleGetActiveService = async (req: Request, res: Response) => {
             const activeService =  await getActiveService()
 
             res.status(200).json(activeService)
-            
+
       } catch (error) {
             if(error instanceof Error){
 
