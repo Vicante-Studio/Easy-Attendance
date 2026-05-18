@@ -7,6 +7,8 @@ import { Input } from '../ui/form/input'
 import axios from 'axios'
 import { api } from '@/lib/api'
 import { useNavigate } from 'react-router'
+import type { Section,  SectionFormProps } from '@/types/sectionTypes'
+import { useEffect, useState } from 'react'
 
 const formSchema = z.object({
     name: z.string().min(1, 'Section name is required'),
@@ -14,8 +16,11 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>
 
-const SectionForm = () => {
+const SectionForm = ({ section_id }: SectionFormProps) => {
     const navigate = useNavigate()
+    const [existingSection, setExistingSection] = useState<Section | null>(null)
+
+    const isEditMode =  !!existingSection
 
    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<FormValues>({
         resolver: zodResolver(formSchema),
@@ -30,14 +35,23 @@ const SectionForm = () => {
 
     const onSubmit = async (values: FormValues) => {
         try {
-            const response = await api.post('/api/churchSection', values)
 
-            console.log("Success:", response.data)
+            if(isEditMode && existingSection){
+                const res = api.put(`/api/churchSection/${section_id}`, values)
+
+                console.log("Section editted:", res)
+
+            } else {
+                const response = await api.post('/api/churchSection', values)
+
+                console.log("Section Created:", response.data)
+            }
 
             resetForm()
+
             // TODO: Add success message card before navigating to adminPage
             navigate('/adminPage')
-
+            
         } catch (error) {
             console.error("Submit failed:", error)
 
@@ -51,6 +65,35 @@ const SectionForm = () => {
                     }
                 }
     }
+
+    useEffect(() => {
+        if(!section_id) return
+
+        const fetchSection = async () => {
+            try {
+                const { data } = await api.get(`/api/churchSection/${section_id}`)
+
+                setExistingSection(data)
+
+                reset({
+                    name: data.name ?? ''
+                })
+
+            } catch (error) {
+
+                if(axios.isAxiosError(error)){
+                          alert(
+                              error?.response?.data?.message ||
+                              "Something went wrong"
+                          )
+                      } else {
+                          alert('Something went wrong')
+                      }
+                  }
+        }
+
+        fetchSection()
+    }, [section_id, reset])
 
   return (
     <main className="w-full max-w-md mx-auto px-4 py-10">
@@ -70,6 +113,10 @@ const SectionForm = () => {
                 }
             </Button>
         </form>
+
+        <Button onClick={() => navigate('/adminPage')}>
+            Return Back
+        </Button>
     </main>
   )
 }

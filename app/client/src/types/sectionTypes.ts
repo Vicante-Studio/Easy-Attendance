@@ -4,3 +4,7 @@ export interface Section {
     display_order: number,
     created_at: string
 }
+
+export interface SectionFormProps {
+    section_id?: string
+}
