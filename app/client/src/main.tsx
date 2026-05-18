@@ -8,6 +8,7 @@ import AdminPage from './pages/admin/AdminPage.tsx';
 import NotFoundPage from './pages/404/NotFoundPage.tsx';
 import CreateSectionPage from './pages/admin/forms/CreateSection.tsx';
 import CreateServicePage from './pages/admin/forms/CreateService.tsx';
+import EditSectionPage from './pages/admin/forms/EditSectionPage.tsx';
 
 const router = createBrowserRouter([
   {
@@ -27,13 +28,17 @@ const router = createBrowserRouter([
     element: <CreateSectionPage />,
   },
   {
+    path: '/createSection/:section_id/edit',
+    element: <EditSectionPage />
+  },
+  {
     path: '/createService',
     element: <CreateServicePage />,
   },
   {
     path: '*',
     element: <NotFoundPage />,
-  },
+  }
 ])
 
 createRoot(document.getElementById('root')!).render(
