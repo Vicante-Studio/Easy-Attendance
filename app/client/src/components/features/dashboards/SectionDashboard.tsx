@@ -1,15 +1,9 @@
 import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
+import type { Section } from '@/types/sectionTypes'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
-
-interface Section {
-    id: string
-    name: string,
-    display_order: number,
-    created_at: string
-}
 
 const SectionDashboard = () => {
     const navigate = useNavigate()
@@ -37,6 +31,25 @@ const SectionDashboard = () => {
 
         fetchSections()
     }, [])
+
+    const handleDelete = async(id: string) => {
+        try {
+            
+            const res = await api.delete(`/api/churchSection${id}`)
+
+            console.log(res.data)
+
+        } catch (error) {
+            if(axios.isAxiosError(error)){
+                          alert(
+                              error?.response?.data?.message ||
+                              "Something went wrong"
+                          )
+                      } else {
+                          alert('Something went wrong')
+                      }
+                  }
+        }
     
   return (
     <section className='w-[70%] flex flex-col items-center gap-8 border p-2 rounded-md'>
@@ -45,10 +58,15 @@ const SectionDashboard = () => {
       <div className='w-full flex flex-col gap-2'>
         {
             sectionData.map(section => (
-                <div className='flex justify-between items-center border p-2 rounded-md'>
+                <div key={section.id} className='flex justify-between items-center border p-2 rounded-md'>
                     <p>
                         {section?.name}
                     </p>
+
+                    <div className='flex gap-2'>
+                        <Button>Edit</Button>
+                        <Button onClick={() => handleDelete(section.id)}>Delete</Button>
+                    </div>
                 </div>
             ))
         }

@@ -23,7 +23,7 @@ const AdminDashboard = () => {
 
       setData(res.data)
     }
-    
+
     fetchData()
 
     socket.on('attendance:updated', fetchData)
@@ -35,10 +35,26 @@ const AdminDashboard = () => {
 
   console.log(data)
 
+  const grandTotal = data.reduce((sum, s) => sum + s.men + s.women + s.children, 0)
+
   return (
     <main className="p-6">
-      <h2 className="text-xl font-semibold mb-4">Attendance Dashboard</h2>
-      <h3 className='font-medium text-2xl'>{`Current Service: ${activeService?.name}`}</h3>
+      <div className='flex flex-col items-center justify-between mb-6 gap-4'>
+            <h2 className="text-xl font-semibold">Attendance Dashboard</h2>
+            <div className='text-center'>
+                <p className='text-sm text-muted-foreground'>Current Service</p>
+                <p className='font-medium text-lg'>
+                    {activeService ? activeService.name : 'No active service'}
+                </p>
+            </div>
+        </div>
+
+        {grandTotal > 0 && (
+                <div className='mb-6 p-4 bg-muted rounded-lg text-center'>
+                    <p className='text-sm text-muted-foreground'>Grand Total</p>
+                    <p className='text-4xl font-bold'>{grandTotal}</p>
+                </div>
+            )}
 
       <Table>
         <TableHeader>
