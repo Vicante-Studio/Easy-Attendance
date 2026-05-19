@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createChurchAttendance, getAllChurchAttendance, getOneChurchAttendance, updateChurchAttendance, deleteChurchAttendance } from '../services/churchAttendance.service.js';
+import { createChurchAttendance, getAllChurchAttendance, getOneChurchAttendance, updateChurchAttendance, deleteChurchAttendance, getAttendanceByService, getTotalsByService } from '../services/churchAttendance.service.js';
 import { getIO } from '../sockets/socket.js';
 import { getSectionIdByName } from '../services/churchSection.service.js';
 import { getActiveService } from '../services/churchService.service.js';
@@ -55,13 +55,30 @@ export const handleGetAllChurchAttendance = async (req: Request, res: Response) 
     }
 }
 
+// Handle Get Attendance by Service
+export const handleGetAttendanceByService = async (req: Request, res: Response) => {
+  try {
+
+      const { service_id } = req.params
+      
+      const data = getAttendanceByService(service_id as string)
+
+      return res.status(200).json(data)
+
+  } catch (error) {
+      if(error instanceof Error){
+        return res.status(500).json({ error: error.message })
+      }
+  }
+}
+
 // Handle Get One Attendance
 export const handleGetOneChurchAttendance = async (req: Request, res: Response) => {
   try {
 
-      const { attendanceID } = req.params
+      const { attendance_id } = req.params
       
-      const data = getOneChurchAttendance(attendanceID as string)
+      const data = getOneChurchAttendance(attendance_id as string)
 
       return res.status(200).json(data)
 
@@ -76,10 +93,10 @@ export const handleGetOneChurchAttendance = async (req: Request, res: Response) 
 export const handleUpdateChurchAttendance = async (req: Request, res: Response) => {
   try {
 
-        const { attendanceID } = req.params
+        const { attendance_id } = req.params
         const updatedChurchAttendanceData = req.body
         
-        const data = await updateChurchAttendance(attendanceID as string, updatedChurchAttendanceData)
+        const data = await updateChurchAttendance(attendance_id as string, updatedChurchAttendanceData)
 
         getIO().emit('attendance:updated')
 
@@ -96,13 +113,30 @@ export const handleUpdateChurchAttendance = async (req: Request, res: Response) 
 export const handleDeleteChurchAttendance = async (req: Request, res: Response) => {
   try {
 
-      const { attendanceID } = req.params
+      const { attendance_id } = req.params
 
-      deleteChurchAttendance(attendanceID as string)
+      deleteChurchAttendance(attendance_id as string)
 
       getIO().emit('attendance:updated')
 
       return res.status(200).json({ message: 'Church Attendance deleted successfully' })
+
+  } catch (error) {
+      if(error instanceof Error){
+        return res.status(500).json({ error: error.message })
+      }
+  }
+}
+
+// Handle Get Total By Service
+export const handleGetTotalsByService = async (req: Request, res: Response) => {
+  try {
+
+      const { service_id } = req.params
+      
+      const data = getTotalsByService(service_id as string)
+
+      return res.status(200).json(data)
 
   } catch (error) {
       if(error instanceof Error){

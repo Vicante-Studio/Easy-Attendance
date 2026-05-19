@@ -1,16 +1,20 @@
 import express from 'express';
-import { handleCreateChurchAttendance, handleGetAllChurchAttendance, handleGetOneChurchAttendance, handleUpdateChurchAttendance, handleDeleteChurchAttendance } from '../controllers/churchAttendance.controller.js';
+import { handleCreateChurchAttendance, handleGetAllChurchAttendance, handleGetOneChurchAttendance, handleUpdateChurchAttendance, handleDeleteChurchAttendance, handleGetAttendanceByService } from '../controllers/churchAttendance.controller.js';
 
 const router = express.Router()
 
 router.get('/', handleGetAllChurchAttendance)
 
-router.get('/:attendanceID', handleGetOneChurchAttendance)
+router.get('/:attendance_id', handleGetOneChurchAttendance)
+
+router.get('/service/:service_id', handleGetAttendanceByService)
+
+router.get('/service/total/:service_id')
 
 router.post('/', handleCreateChurchAttendance)
 
-router.put('/:attendanceID', handleUpdateChurchAttendance)
+router.put('/:attendance_id', handleUpdateChurchAttendance)
 
-router.delete('/:attendanceID', handleDeleteChurchAttendance)
+router.delete('/:attendance_id', handleDeleteChurchAttendance)
 
 export default router
