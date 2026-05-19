@@ -54,7 +54,7 @@ const SectionDashboard = () => {
 
                     <div className='flex gap-2'>
                         <Button onClick={() => navigate(`/createSection/${section.id}/edit`)}>Edit</Button>
-                        <DeleteSectionModal section_id={section.id}/>
+                        <DeleteSectionModal id={section.id}/>
                     </div>
                 </div>
             ))
