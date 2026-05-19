@@ -1,13 +1,8 @@
 import { api } from '@/lib/api'
 import { useEffect, useState } from 'react'
 import { socket } from '@/lib/socket'
+import type { Service } from '@/types/serviceTypes'
 
-interface Service {
-  id: string
-  name: string
-  is_active: number
-  created_at: string
-}
 export const useActiveService = () => {
   const [activeService, setActiveService] = useState<Service | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
@@ -29,10 +24,10 @@ export const useActiveService = () => {
 
         fetchActiveService()
 
-        socket.on('services:changed', fetchActiveService)
+        socket.on('services:updated', fetchActiveService)
 
         return () => {
-          socket.off('services:changed', fetchActiveService)
+          socket.off('services:updated', fetchActiveService)
         }
 
     }, [])
