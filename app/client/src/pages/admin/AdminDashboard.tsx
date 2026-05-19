@@ -19,7 +19,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await api.get('/api/churchAttendance')
+      const res = await api.get(`/api/churchAttendance/service/${activeService?.id}`)
 
       setData(res.data)
     }
@@ -31,7 +31,7 @@ const AdminDashboard = () => {
     return () => {
       socket.off('attendance:updated', fetchData)
     }
-  }, [])
+  }, [activeService])
 
   console.log(data)
 
