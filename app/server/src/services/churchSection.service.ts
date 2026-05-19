@@ -53,6 +53,15 @@ export function deleteChurchSection(section_id: string) {
     const existing = db.prepare('SELECT * FROM sections WHERE id = ?').get(section_id)
     if (!existing) throw new Error('Section not found')
 
+    // Check if any attendance records reference this section
+    const linkedAttendance = db.prepare(`
+            SELECT COUNT(*) as count FROM attendance WHERE section_id = ?
+        `).get(section_id) as { count: number }
+
+    if(linkedAttendance.count > 0){
+        throw new Error(`Cannot delete this section - It has ${linkedAttendance.count} attendance record(s) linked to it. Delete the attendance records first or contact your administrator`)
+    }
+
     db.prepare('DELETE FROM sections WHERE id = ?').run(section_id)
 
     return true

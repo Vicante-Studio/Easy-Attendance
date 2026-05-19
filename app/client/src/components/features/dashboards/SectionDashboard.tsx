@@ -4,6 +4,7 @@ import type { Section } from '@/types/sectionTypes'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
+import DeleteSectionModal from '../section/DeleteSection'
 
 const SectionDashboard = () => {
     const navigate = useNavigate()
@@ -31,25 +32,6 @@ const SectionDashboard = () => {
 
         fetchSections()
     }, [])
-
-    const handleDelete = async(id: string) => {
-        try {
-            
-            const res = await api.delete(`/api/churchSection${id}`)
-
-            console.log(res.data)
-
-        } catch (error) {
-            if(axios.isAxiosError(error)){
-                          alert(
-                              error?.response?.data?.message ||
-                              "Something went wrong"
-                          )
-                      } else {
-                          alert('Something went wrong')
-                      }
-                  }
-        }
     
   return (
     <section className='w-[70%] flex flex-col items-center gap-8 border p-2 rounded-md'>
@@ -65,7 +47,7 @@ const SectionDashboard = () => {
 
                     <div className='flex gap-2'>
                         <Button onClick={() => navigate(`/createSection/${section.id}/edit`)}>Edit</Button>
-                        <Button onClick={() => handleDelete(section.id)}>Delete</Button>
+                        <DeleteSectionModal section_id={section.id}/>
                     </div>
                 </div>
             ))
