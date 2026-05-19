@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router'
 import { Button } from '@/components/ui/button'
-import ServiceForm from '@/components/features/ServicesForm'
+import ServiceForm from '@/components/features/ServiceForm'
 
 const CreateServicePage = () => {
   const navigate = useNavigate()

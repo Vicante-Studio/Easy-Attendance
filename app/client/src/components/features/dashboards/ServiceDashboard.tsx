@@ -1,8 +1,10 @@
 import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
+import { socket } from '@/lib/socket'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
+import DeleteServiceModal from '../churchService/DeleteServiceModal'
 
 interface Service {
     id: string
@@ -60,10 +62,15 @@ const ServiceDashboard = () => {
             const res = await api.get('/api/churchService')
 
             setServiceData(res.data)
-
         }
 
         loadServices()
+
+        socket.on('services:updated', loadServices)
+
+        return () => {
+            socket.off('sections:updated', loadServices)
+        }
     }, [])
 
   return (
@@ -84,17 +91,20 @@ const ServiceDashboard = () => {
                         {service.name}
                     </p>
 
-                    {
-                        service.is_active ? (
-                            <Button onClick={() => toggleActivation(service.id)} className='border px-4 py-2 bg-green-200 text-green-700 rounded-md'>
-                                De-activate
-                            </Button>
-                        ) : (
-                            <Button onClick={() => toggleActivation(service.id)} className='border px-4 py-2 rounded-md'>
-                                Activate
-                            </Button>
-                        )
-                    }
+                    
+
+                    <div className='flex gap-2'>
+                        {
+                            !service.is_active ? (
+                                <Button onClick={() => toggleActivation(service.id)} className='border px-4 py-2 rounded-md'>
+                                    Activate
+                                </Button>
+                            ) : null
+                        }
+                        <Button onClick={() => navigate(`/createService/${service.id}/edit`)}>Edit</Button>
+                        
+                        <DeleteServiceModal id={service.id} />
+                    </div>
                 </div>
             ))
         }

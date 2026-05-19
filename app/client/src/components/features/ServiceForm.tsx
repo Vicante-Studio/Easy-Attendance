@@ -7,6 +7,8 @@ import { Input } from '../ui/form/input'
 import axios from 'axios'
 import { api } from '@/lib/api'
 import { useNavigate } from 'react-router'
+import type { Service, ServiceFormProps } from '@/types/serviceTypes'
+import { useEffect, useState } from 'react'
 
 const formSchema = z.object({
     name: z.string().min(1, 'Section name is required')
@@ -14,13 +16,16 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>
 
-const ServiceForm = () => {
+const ServiceForm = ({ service_id }: ServiceFormProps) => {
    const navigate = useNavigate()
+   const [existingService, setExistingService] = useState<Service | null>(null)
+
+   const isEditMode = !!existingService
 
    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-        name: '',
+            name: '',
         },
     })
 
@@ -30,16 +35,22 @@ const ServiceForm = () => {
 
     const onSubmit = async (values: FormValues) => {
         try {
-            const response = await api.post('/api/churchService', values)
 
-            console.log("Success:", response.data)
+            if(isEditMode && service_id){
+                const { data } = await api.put(`/api/churchService/${service_id}`, values)
 
+                console.log("Section editted:", data)
+            } else {
+                const { data } = await api.post('/api/churchService', values)
+
+                console.log("Success:", data)
+            }
+            
             resetForm()
 
             // TODO: Add success message card before navigating to adminPage
-            
             navigate('/adminPage')
-
+            
         } catch (error) {
             console.error("Submit failed:", error)
 
@@ -53,6 +64,35 @@ const ServiceForm = () => {
                     }
                 }
     }
+
+    useEffect(() => {
+        if(!service_id) return
+
+        const fetchSection = async () => {
+            try {
+                const { data } = await api.get(`/api/churchSection/${service_id}`)
+
+                setExistingService(data)
+
+                reset({
+                    name: data.name ?? ''
+                })
+
+            } catch (error) {
+
+                if(axios.isAxiosError(error)){
+                          alert(
+                              error?.response?.data?.message ||
+                              "Something went wrong"
+                          )
+                      } else {
+                          alert('Something went wrong')
+                      }
+                  }
+        }
+
+        fetchSection()
+    }, [service_id, reset])
 
   return (
     <main className="w-full max-w-md mx-auto px-4 py-10">

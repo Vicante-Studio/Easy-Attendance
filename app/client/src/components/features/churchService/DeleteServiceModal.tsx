@@ -33,7 +33,7 @@ const DeleteServiceModal = ({ id }: deleteModalProps) => {
             <AlertDialogHeader>
                 <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                 <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete your Section.
+                    This action cannot be undone. This will permanently delete your Service.
                 </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
