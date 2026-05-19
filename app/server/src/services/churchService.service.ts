@@ -74,6 +74,15 @@ export async function deleteService(service_id: string) {
     const existing = db.prepare('SELECT * FROM services WHERE id = ?').get(service_id)
     if (!existing) throw new Error('Service not found')
 
+    // Check if any attendance records reference this service
+    const linkedAttendance = db.prepare(`
+            SELECT COUNT(*) as count FROM attendance WHERE service_id = ?
+        `).get(service_id) as { count: number }
+
+    if(linkedAttendance.count > 0){
+        throw new Error(`Cannot delete this service - It has ${linkedAttendance.count} attendance record(s) linked to it. Delete the attendance records first or contact your administrator`)
+    }
+
     db.prepare('DELETE FROM services WHERE id = ?').run(service_id)
 
     return true
