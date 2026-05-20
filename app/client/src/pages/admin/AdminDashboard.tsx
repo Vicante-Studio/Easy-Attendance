@@ -3,19 +3,10 @@ import { useActiveService } from '@/hooks/useActiveService'
 import { api } from '@/lib/api'
 import { useEffect, useState } from 'react'
 import { socket } from '@/lib/socket'
-
-type SectionStats = {
-  id: string
-  section_id: string
-  section_name: string
-  men: number
-  women: number
-  children: number
-  counter_name?: string
-}
+import type { Attendance } from '@/types/attendanceTypes'
 
 const AttendanceDashboard = () => {
-  const [data, setData] = useState<SectionStats[]>([])
+  const [data, setData] = useState<Attendance[]>([])
   const { activeService } = useActiveService()
 
   useEffect(() => {
