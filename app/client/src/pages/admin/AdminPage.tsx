@@ -7,11 +7,35 @@ import ServiceDashboard from '@/components/features/dashboards/ServiceDashboard'
 import { Button } from '@/components/ui/button'
 import { History } from 'lucide-react'
 import { useNavigate } from 'react-router'
+import { useActiveService } from '@/hooks/useActiveService'
+// import { socket } from '@/lib/socket'
 
 const AdminPage = () => {
   const navigate = useNavigate()
   const [ip, setIp] = useState<string>('')
   const [port, setPort] = useState<number>(8000)
+
+  const { activeService_id } = useActiveService()
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     if(!activeService_id) {
+  //       return
+  //     }
+
+  //     const res = await api.get(`/api/churchAttendance/service/${activeService_id}`)
+
+  //     setData(res.data)
+  //   }
+
+  //   fetchData()
+
+  //   socket.on('attendance:updated', fetchData)
+
+  //   return () => {
+  //     socket.off('attendance:updated', fetchData)
+  //   }
+  // }, [activeService])
 
   useEffect(() => {
       async function getLocalIPAddress(){
@@ -58,7 +82,7 @@ const AdminPage = () => {
         <ServiceDashboard />
       </section>
 
-      <AttendanceDashboard />
+      <AttendanceDashboard service_id={activeService_id} view='active' />
 
       <Button onClick={() => navigate('/history/admin')}>
         <History />

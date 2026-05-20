@@ -1,7 +1,7 @@
 const AdminHistory = () => {
   return (
     <main>
-      
+        
     </main>
   )
 }

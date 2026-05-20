@@ -7,3 +7,8 @@ export interface Attendance {
   children: number
   counter_name?: string
 }
+
+export interface AttendanceDashboardProps {
+  service_id?: string
+  view: "single" | "active" | "all" // Choose whether you want a single attendance, the active service attendance or all attendance submissions
+}

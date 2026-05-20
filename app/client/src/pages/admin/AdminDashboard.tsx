@@ -1,36 +1,50 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useActiveService } from '@/hooks/useActiveService'
 import { api } from '@/lib/api'
 import { useEffect, useState } from 'react'
 import { socket } from '@/lib/socket'
+import type { AttendanceDashboardProps } from '@/types/attendanceTypes'
 import type { Attendance } from '@/types/attendanceTypes'
+import type { Service } from '@/types/serviceTypes'
 
-const AttendanceDashboard = () => {
+const AttendanceDashboard = ({ service_id, view }: AttendanceDashboardProps) => {
   const [data, setData] = useState<Attendance[]>([])
-  const { activeService } = useActiveService()
+  const [currentService, setCurrentService] = useState<Service | null>(null)
 
   useEffect(() => {
-    const fetchData = async () => {
-      if(!activeService?.id) {
-        setData([])
-        return
+    const fetchAttendanceData = async () => {
+
+      // Fetch attendance based on what the dashboard view is
+      if(view === "active" || view === "single"){
+
+        const { data } = await api.get(`/api/churchAttendance/service/${service_id}`)
+
+        setData(data)
+
+      } else {
+
+        const { data } = await api.get(`/api/churchAttendance/`)
+
+        setData(data)
+
       }
 
-      const res = await api.get(`/api/churchAttendance/service/${activeService?.id}`)
-
-      setData(res.data)
     }
 
-    fetchData()
+    const getServiceData = async() => {
+      const { data } = await api.get(`/api/churchService/${service_id}`)
 
-    socket.on('attendance:updated', fetchData)
+      setCurrentService(data)
+    }
+
+    getServiceData()
+    fetchAttendanceData()
+
+    socket.on('attendance:updated', fetchAttendanceData)
 
     return () => {
-      socket.off('attendance:updated', fetchData)
+      socket.off('attendance:updated', fetchAttendanceData)
     }
-  }, [activeService])
-
-  console.log(data)
+  }, [service_id, view])
 
   const grandTotal = data.reduce((sum, s) => sum + s.men + s.women + s.children, 0)
 
@@ -41,7 +55,7 @@ const AttendanceDashboard = () => {
             <div className='text-center'>
                 <p className='text-sm text-muted-foreground'>Current Service</p>
                 <p className='font-medium text-lg'>
-                    {activeService ? activeService.name : 'No active service'}
+                    {currentService ? currentService.name : 'No active service'}
                 </p>
             </div>
         </div>
