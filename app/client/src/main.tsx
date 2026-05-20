@@ -10,6 +10,8 @@ import CreateSectionPage from './pages/admin/forms/CreateSection.tsx';
 import CreateServicePage from './pages/admin/forms/CreateService.tsx';
 import EditSectionForm from './components/features/churchSection/EditSectionForm.tsx';
 import EditServiceForm from './components/features/churchService/EditServiceForm.tsx';
+import AdminHistory from './pages/history/AdminHistory.tsx';
+import CounterHistory from './pages/history/CounterHistory.tsx';
 
 const router = createBrowserRouter([
   {
@@ -39,6 +41,14 @@ const router = createBrowserRouter([
   {
     path: '/createService/:service_id/edit',
     element: <EditServiceForm />
+  },
+  {
+    path: '/history/admin',
+    element: <AdminHistory />
+  },
+  {
+    path: '/history/counter',
+    element: <CounterHistory />
   },
   {
     path: '*',
