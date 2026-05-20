@@ -4,9 +4,12 @@ import { useEffect, useState } from 'react'
 import AdminDashboard from './AdminDashboard'
 import SectionDashboard from '@/components/features/dashboards/SectionDashboard'
 import ServiceDashboard from '@/components/features/dashboards/ServiceDashboard'
+import { Button } from '@/components/ui/button'
+import { History } from 'lucide-react'
+import { useNavigate } from 'react-router'
 
 const AdminPage = () => {
-
+  const navigate = useNavigate()
   const [ip, setIp] = useState<string>('')
   const [port, setPort] = useState<number>(8000)
 
@@ -36,7 +39,7 @@ const AdminPage = () => {
 
 
   return (
-    <main className='w-full h-full flex flex-col items-center gap-6'>
+    <main className='w-full h-full flex flex-col items-center gap-6 mb-20'>
       <h1 className='text-xl text-center w-fit'><span className='font-bold'>Counters</span> <br /> Open your browsers and go to:</h1>
 
       <section className='border border-gray-300 bg-gray-200 p-20 rounded-lg'>
@@ -56,6 +59,11 @@ const AdminPage = () => {
       </section>
 
       <AdminDashboard />
+
+      <Button onClick={() => navigate('/history/admin')}>
+        <History />
+        View attendance History
+      </Button>
     </main>
   )
 }
