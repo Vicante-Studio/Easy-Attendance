@@ -1,7 +1,7 @@
 import { api } from '@/lib/api'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import AdminDashboard from './AdminDashboard'
+import AttendanceDashboard from './AdminDashboard'
 import SectionDashboard from '@/components/features/dashboards/SectionDashboard'
 import ServiceDashboard from '@/components/features/dashboards/ServiceDashboard'
 import { Button } from '@/components/ui/button'
@@ -58,7 +58,7 @@ const AdminPage = () => {
         <ServiceDashboard />
       </section>
 
-      <AdminDashboard />
+      <AttendanceDashboard />
 
       <Button onClick={() => navigate('/history/admin')}>
         <History />

@@ -14,7 +14,7 @@ type SectionStats = {
   counter_name?: string
 }
 
-const AdminDashboard = () => {
+const AttendanceDashboard = () => {
   const [data, setData] = useState<SectionStats[]>([])
   const { activeService } = useActiveService()
 
@@ -102,4 +102,4 @@ const AdminDashboard = () => {
   )
 }
 
-export default AdminDashboard
+export default AttendanceDashboard
