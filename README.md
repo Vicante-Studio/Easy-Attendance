@@ -1,6 +1,6 @@
 # Church Attendance Counter System
 
-A local-network web application that allows churches to count and track service attendance in real time. Multiple counters use their personal devices to submit attendance data during a service. A central dashboard on the admin laptop receives and displays the data live, broken down by section and demographic.
+A local-network desktop application that allows churches to count and track service attendance in real time. Multiple counters use their personal devices to submit attendance data during a service. A central dashboard on the admin laptop receives and displays the data live, broken down by section and demographic.
 
 ---
 
