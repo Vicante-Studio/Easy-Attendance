@@ -5,20 +5,38 @@ import { socket } from '@/lib/socket'
 import type { AttendanceDashboardProps } from '@/types/attendanceTypes'
 import type { Attendance } from '@/types/attendanceTypes'
 import type { Service } from '@/types/serviceTypes'
+import { useActiveService } from '@/hooks/useActiveService'
+import { formatDate } from '@/utils/formatDate'
 
 const AttendanceDashboard = ({ service_id, view }: AttendanceDashboardProps) => {
   const [data, setData] = useState<Attendance[]>([])
-  const [currentService, setCurrentService] = useState<Service | null>(null)
+  const [Service, setService] = useState<Service | null>(null)
+  const { activeService, activeService_id } = useActiveService()
 
   useEffect(() => {
+    const getServiceData = async() => {
+      const { data } = await api.get(`/api/churchService/${service_id}`)
+
+      return data
+    }
+
     const fetchAttendanceData = async () => {
 
       // Fetch attendance based on what the dashboard view is
-      if(view === "active" || view === "single"){
+      if(view === "active"){
 
-        const { data } = await api.get(`/api/churchAttendance/service/${service_id}`)
+        const { data } = await api.get(`/api/churchAttendance/service/${activeService_id}`)
 
         setData(data)
+        setService(activeService)
+
+      } else if(view === "single"){
+
+        const { data } = await api.get(`/api/churchAttendance/service/${service_id}`)
+        const serviceData = await getServiceData()
+
+        setData(data)
+        setService(serviceData)
 
       } else {
 
@@ -30,38 +48,42 @@ const AttendanceDashboard = ({ service_id, view }: AttendanceDashboardProps) => 
 
     }
 
-    const getServiceData = async() => {
-      const { data } = await api.get(`/api/churchService/${service_id}`)
-
-      setCurrentService(data)
-    }
-
     getServiceData()
     fetchAttendanceData()
 
     socket.on('attendance:updated', fetchAttendanceData)
+    socket.on('services:updated', getServiceData)
 
     return () => {
       socket.off('attendance:updated', fetchAttendanceData)
+      socket.off('services:updated', getServiceData)
     }
-  }, [service_id, view])
+  }, [service_id, activeService, activeService_id, view])
 
   const grandTotal = data.reduce((sum, s) => sum + s.men + s.women + s.children, 0)
 
   return (
-    <main className="p-6">
-      <div className='flex flex-col items-center justify-between mb-6 gap-4'>
-            <h2 className="text-xl font-semibold">Attendance Dashboard</h2>
-            <div className='text-center'>
-                <p className='text-sm text-muted-foreground'>Current Service</p>
-                <p className='font-medium text-lg'>
-                    {currentService ? currentService.name : 'No active service'}
-                </p>
+    <main className="p-6 w-full h-full border rounded-md bg-neutral-50">
+      <div className='mb-6 text-center w-full justify-between flex flex-wrap '>
+            <div className='text-left w-fit bg-neutral-200 rounded-lg p-4'>
+                
+              <h2 className="text-xl font-bold">Service</h2>
+              <p className=' text-lg'>
+                  {Service ? Service.name : 'No active service'}
+              </p>
+            </div>
+
+            <div className='text-left w-fit bg-muted rounded-lg p-4'>
+                
+              <h2 className="text-lg font-bold">Date</h2>
+              <p>
+                  {Service ? formatDate(Service.created_at) : 'No active service'}
+              </p>
             </div>
         </div>
 
         {grandTotal > 0 && (
-                <div className='mb-6 p-4 bg-muted rounded-lg text-center'>
+                <div className='mb-6 p-4 bg-neutral-200 rounded-lg text-center'>
                     <p className='text-sm text-muted-foreground'>Grand Total</p>
                     <p className='text-4xl font-bold'>{grandTotal}</p>
                 </div>
