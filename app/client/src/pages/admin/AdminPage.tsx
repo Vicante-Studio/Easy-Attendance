@@ -62,7 +62,7 @@ const AdminPage = () => {
 
       <Button onClick={() => navigate('/history/admin')}>
         <History />
-        View attendance History
+        View all Attendance Submissions
       </Button>
     </main>
   )
