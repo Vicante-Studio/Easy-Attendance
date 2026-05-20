@@ -6,12 +6,14 @@ import type { Service } from '@/types/serviceTypes'
 export const useActiveService = () => {
   const [activeService, setActiveService] = useState<Service | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
+  const [activeService_id, setActiveService_id] = useState<string>('')
 
   const fetchActiveService = async () => {
     try {
-      const res = await api.get('/api/churchService/active')
+      const { data } = await api.get('/api/churchService/active')
 
-      setActiveService(res.data)
+      setActiveService(data)
+      setActiveService_id(data.id)
 
     } catch (error) {
       console.error(error)
@@ -34,6 +36,7 @@ export const useActiveService = () => {
 
   return {
     activeService,
-    loading
+    loading,
+    activeService_id
   }
 }
