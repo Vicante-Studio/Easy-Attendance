@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import AttendanceDashboard from '../admin/AttendanceDashboard'
 import type { Service } from '@/types/serviceTypes'
 import { api } from '@/lib/api'
+import { socket } from '@/lib/socket'
 
 const AdminHistory = () => {
   const [ServiceData, setServiceData] = useState<Service[]>([])
@@ -14,6 +15,14 @@ const AdminHistory = () => {
     }
 
     fetchAllServices()
+
+    socket.on('attendance:updated', fetchAllServices)
+        socket.on('services:updated', fetchAllServices)
+    
+    return () => {
+      socket.off('attendance:updated', fetchAllServices)
+      socket.off('services:updated', fetchAllServices)
+    }
   }, [])
   return (
     <main className='w-full h-full p-20 gap-30 flex flex-wrap'>
