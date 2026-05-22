@@ -2,9 +2,8 @@ import { stringify } from 'csv-stringify'
 import { getAttendanceByService } from './churchAttendance.service.js'
 
 export const generateAttendanceCSV = async (serviceID: string): Promise<string> => {
-
-    // Use the SQLite service function directly
-    const data = getAttendanceByService(serviceID)
+    
+    const data = await getAttendanceByService(serviceID)
 
     if (!data || data.length === 0) {
         throw new Error('No attendance data found for this service')
