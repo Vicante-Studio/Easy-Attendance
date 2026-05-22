@@ -1,13 +1,20 @@
+// app/server/server.ts
+
 import http from 'http'
 import { Server } from 'socket.io'
-import app from './src/app.js'
 import log from 'electron-log'
 
+import app from './src/app.js'
+
 export function startServer() {
+  console.log('SERVER ENTRY STARTED')
+
   const server = http.createServer(app)
 
   const io = new Server(server, {
-    cors: { origin: '*' }
+    cors: {
+      origin: '*',
+    },
   })
 
   io.on('connection', (socket) => {
@@ -16,7 +23,10 @@ export function startServer() {
 
   const PORT = 3000
 
+  console.log('STARTING HTTP SERVER...')
+
   server.listen(PORT, () => {
+    console.log(`SERVER RUNNING ON ${PORT}`)
     log.info(`Server running at http://localhost:${PORT}`)
   })
 }
