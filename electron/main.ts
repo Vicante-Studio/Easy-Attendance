@@ -8,9 +8,11 @@ let mainWindow: BrowserWindow | null = null
 let serverProcess: ChildProcess | null = null
 
 function startServer() {
-    serverProcess = spawn('node', [
-        path.join(__dirname, '../app/server/dist/server.js')
-    ], {
+    const serverPath = app.isPackaged
+        ? path.join(process.resourcesPath, 'app/server/dist/server.js')
+        : path.join(__dirname, '../app/server/dist/server.js')
+
+    serverProcess = spawn('node', [serverPath], {
         stdio: 'inherit',
         env: { ...process.env, NODE_ENV: 'production' }
     })
