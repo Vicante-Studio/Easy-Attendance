@@ -1,0 +1,32 @@
+datasource db {
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Service {
+  id         String   @id
+  name       String
+  is_active  Boolean  @default(false)
+  created_at DateTime @default(now())
+}
+
+model Section {
+  id             String   @id
+  name           String   @unique
+  display_order  Int      @default(0)
+  created_at     DateTime @default(now())
+}
+
+model Attendance {
+  id            String   @id
+  service_id    String
+  section_id    String
+  men           Int      @default(0)
+  women         Int      @default(0)
+  children      Int      @default(0)
+  counter_name  String?
+  submitted_at  DateTime @default(now())
+}
