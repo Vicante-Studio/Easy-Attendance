@@ -15,30 +15,25 @@
         "dev:electron": "npm run build:electron && wait-on http://localhost:5173 && cross-env NODE_ENV=development electron .",
         "build:electron": "esbuild electron/main.ts --bundle --platform=node --target=node22 --external:electron --format=cjs --outfile=electron/main.js",
         "build:client": "cd app/client && npm run build",
-        "build:server": "esbuild app/server/server.ts --bundle --platform=node --target=node22  --format=cjs --outfile=app/server/dist/server.cjs",
-        "build:all": "npm run build:client && npm run build:server && npm run build:electron",
-        "package": "npm run build:all && cross-env NODE_ENV=production electron-builder"
+        "build:server": "esbuild app/server/server.ts --bundle --platform=node --target=node22 --format=cjs --external:@prisma/client --external:.prisma --external:better-sqlite3 --outfile=app/server/dist/server.cjs",
+        "build:all": "cd app/server && npx prisma generate && cd ../.. && npm run build:client && npm run build:server && npm run build:electron",
+        "package": "npm run build:all && node -e \"require('fs').existsSync('app/server/dist/server.cjs') || process.exit(1)\" && cross-env NODE_ENV=production electron-builder"
     },
     "build": {
         "appId": "com.easycounter.app",
         "productName": "EasyCounter",
+        "asar": false,
         "directories": {
             "output": "release"
         },
-        "asarUnpack": [
-            "**/*.node"
-        ],
         "files": [
             "electron/**/*",
             "app/server/dist/**/*",
             "app/client/dist/**/*",
+            "app/server/prisma/**/*",
+            "node_modules/@prisma/**/*",
+            "node_modules/.prisma/**/*",
             "package.json"
-        ],
-        "extraResources": [
-            {
-                "from": "app/data",
-                "to": "app/data"
-            }
         ],
         "win": {
             "target": "nsis"

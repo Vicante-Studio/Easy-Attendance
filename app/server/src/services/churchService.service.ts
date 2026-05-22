@@ -1,4 +1,4 @@
-import prisma from "../config/database.js"
+import { prisma } from "../config/prisma.js"
 import { v4 as uuidv4 } from "uuid"
 import { ServiceType } from "../types/churchService.type.js"
 
