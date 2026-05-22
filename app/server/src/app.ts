@@ -36,7 +36,7 @@ app.use('/api/exportCSV', csvExportRouter)
 
 // Serve built React app in production
 if(!isDev){
-  const clientPath = path.join(__dirname, '../../client/dist')
+  const clientPath = path.join(__dirname, '..', '..', '..', '..', 'app', 'client', 'dist')
 
   // Serve static files
   app.use(express.static(clientPath))
