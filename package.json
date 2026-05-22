@@ -15,10 +15,9 @@
         "dev:electron": "npm run build:electron && wait-on http://localhost:5173 && cross-env NODE_ENV=development electron .",
         "build:electron": "esbuild electron/main.ts --bundle --platform=node --target=node22 --external:electron --format=cjs --outfile=electron/main.js",
         "build:client": "cd app/client && npm run build",
-        "build:server": "esbuild app/server/server.ts --bundle --platform=node --target=node22 --external:better-sqlite3 --format=cjs --outfile=app/server/dist/server.cjs",
+        "build:server": "esbuild app/server/server.ts --bundle --platform=node --target=node22  --format=cjs --outfile=app/server/dist/server.cjs",
         "build:all": "npm run build:client && npm run build:server && npm run build:electron",
-        "package": "npm run build:all && electron-builder",
-        "postinstall": "electron-rebuild"
+        "package": "npm run build:all && electron-builder"
     },
     "build": {
         "appId": "com.easycounter.app",
@@ -43,10 +42,6 @@
                 "to": "app/data"
             },
             {
-                "from": "node_modules/better-sqlite3",
-                "to": "app/node_modules/better-sqlite3"
-            },
-            {
                 "from": "node_modules/bindings",
                 "to": "app/node_modules/bindings"
             },
@@ -67,7 +62,7 @@
         "cross-env": "^10.1.0",
         "electron": "^42.0.1",
         "electron-builder": "^26.8.1",
-        "electron-rebuild": "^3.2.9",
+        "electron-rebuild": "^1.4.0",
         "esbuild": "^0.28.0",
         "nodemon": "^3.1.14",
         "ts-node": "^10.9.2",

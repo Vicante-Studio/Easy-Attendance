@@ -1,49 +1,67 @@
-import Database from 'better-sqlite3';
-import path from 'path';
+import sqlite3 from "sqlite3"
+import path from "path"
+import fs from "fs"
 
-const __dirname = path.dirname(__filename)
+// Detect environment safely
+const isDev = process.env.NODE_ENV === "development"
 
-const isProd = process.env.NODE_ENV === 'production'
+// Safe DB directory (works in dev + packaged Electron)
+const dbDir = isDev
+  ? path.join(process.cwd(), "app/data")
+  : path.join(process.resourcesPath, "app/data")
 
-// dev:  src/config → src → server → app → root
-// prod: dist/src/config → dist/src → dist → server → app → root
-const levelsUp = isProd ? 5 : 4
-const appRoot = path.resolve(__dirname, ...Array(levelsUp).fill('..'))
-const dbPath = path.join(appRoot, 'app', 'data', 'easycounter.db')
+if (!fs.existsSync(dbDir)) {
+  fs.mkdirSync(dbDir, { recursive: true })
+}
 
-console.log('DB Path:', dbPath)
-const db = new Database(dbPath)
+const dbPath = path.join(dbDir, "easycounter.db")
 
-db.pragma('journal_mode = WAL')
-db.pragma('foreign_keys = ON')
+console.log("DB Path:", dbPath)
 
-db.exec(`
-    CREATE TABLE IF NOT EXISTS services(
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
-      is_active INTEGER DEFAULT 0,
-      created_at TEXT DEFAULT CURRENT_TIMESTAMP
-    );
+// Create database connection
+export const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) {
+    console.error("DB connection error:", err)
+  } else {
+    console.log("SQLite connected successfully")
 
-    CREATE TABLE IF NOT EXISTS sections (
-        id TEXT PRIMARY KEY,
-        name TEXT NOT NULL UNIQUE,
-        display_order INTEGER DEFAULT 0,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP
-    );
+    // Run setup AFTER connection opens
+    db.serialize(() => {
+      db.run(`PRAGMA journal_mode = WAL`)
+      db.run(`PRAGMA foreign_keys = ON`)
 
-    CREATE TABLE IF NOT EXISTS attendance (
-        id TEXT PRIMARY KEY,
-        service_id TEXT NOT NULL,
-        section_id TEXT NOT NULL,
-        men INTEGER DEFAULT 0,
-        women INTEGER DEFAULT 0,
-        children INTEGER DEFAULT 0,
-        counter_name TEXT,
-        submitted_at TEXT DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (service_id) REFERENCES services(id),
-        FOREIGN KEY (section_id) REFERENCES sections(id)
-    );
-  `)
+      db.run(`
+        CREATE TABLE IF NOT EXISTS services(
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          is_active INTEGER DEFAULT 0,
+          created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        );
+      `)
 
-  export default db
+      db.run(`
+        CREATE TABLE IF NOT EXISTS sections (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL UNIQUE,
+          display_order INTEGER DEFAULT 0,
+          created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        );
+      `)
+
+      db.run(`
+        CREATE TABLE IF NOT EXISTS attendance (
+          id TEXT PRIMARY KEY,
+          service_id TEXT NOT NULL,
+          section_id TEXT NOT NULL,
+          men INTEGER DEFAULT 0,
+          women INTEGER DEFAULT 0,
+          children INTEGER DEFAULT 0,
+          counter_name TEXT,
+          submitted_at TEXT DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (service_id) REFERENCES services(id),
+          FOREIGN KEY (section_id) REFERENCES sections(id)
+        );
+      `)
+    })
+  }
+})
