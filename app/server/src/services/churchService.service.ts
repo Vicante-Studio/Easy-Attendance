@@ -1,115 +1,151 @@
-import { db } from '../config/database.js';
-import { v4 as uuidv4 } from 'uuid';
-import { ServiceType } from '../types/churchService.type.js';
+import prisma from "../config/database.js"
+import { v4 as uuidv4 } from "uuid"
+import { ServiceType } from "../types/churchService.type.js"
 
 // Create Service
-export function createService(serviceData: ServiceType) {
-    const id = uuidv4()
-
-    const stmt = db.prepare(`
-            INSERT INTO services (id, name)
-            VALUES (?, ?)
-        `)
-
-    stmt.run(id, serviceData.name)
-
-    return db.prepare('SELECT * FROM services WHERE id = ?').get(id)
+export async function createService(serviceData: ServiceType) {
+  return await prisma.service.create({
+    data: {
+      id: uuidv4(),
+      name: serviceData.name,
+    },
+  })
 }
 
 // Get All Services
 export async function getAllServices() {
-    return db.prepare(`
-        SELECT * FROM services
-        ORDER BY created_at DESC
-    `).all()
+  return await prisma.service.findMany({
+    orderBy: {
+      created_at: "desc",
+    },
+  })
 }
 
 // Get One Service
 export async function getOneService(service_id: string) {
-    const service = db.prepare(`
-        SELECT * FROM services WHERE id = ?
-    `).get(service_id)
+  const service = await prisma.service.findUnique({
+    where: {
+      id: service_id,
+    },
+  })
 
-    if (!service) throw new Error('Service not found')
+  if (!service) {
+    throw new Error("Service not found")
+  }
 
-    return service
+  return service
 }
 
-//Get active Service
-export const getActiveService = async () => {
+// Get Active Service
+export async function getActiveService() {
+  const activeService = await prisma.service.findFirst({
+    where: {
+      is_active: true,
+    },
+  })
 
-  const activeService = db.prepare(`
-        SELECT * FROM services
-        WHERE is_active = 1
-        LIMIT 1
-    `).get()
+  if (!activeService) {
+    throw new Error("Active Service not found")
+  }
 
-    if(!activeService) throw new Error('Active Service not found')
-
-    return activeService    
-
+  return activeService
 }
 
 // Update Service
-export async function updateService(service_id: string, updatedService: {name?: string }) {
-    const existing = db.prepare('SELECT * FROM services WHERE id = ?').get(service_id)
-    if (!existing) throw new Error('Service not found')
+export async function updateService(
+  service_id: string,
+  updatedService: {
+    name?: string
+  }
+) {
+  const existing = await prisma.service.findUnique({
+    where: {
+      id: service_id,
+    },
+  })
 
-    const stmt = db.prepare(`
-        UPDATE services
-        SET name = ?
-        WHERE id = ?
-    `)
+  if (!existing) {
+    throw new Error("Service not found")
+  }
 
-    stmt.run(
-        updatedService.name ?? (existing as any).name,
-        service_id
-    )
+  return await prisma.service.update({
+    where: {
+      id: service_id,
+    },
 
-    return db.prepare('SELECT * FROM services WHERE id = ?').get(service_id)
+    data: {
+      name: updatedService.name ?? existing.name,
+    },
+  })
 }
 
 // Delete Service
 export async function deleteService(service_id: string) {
-    const existing = db.prepare('SELECT * FROM services WHERE id = ?').get(service_id)
-    if (!existing) throw new Error('Service not found')
+  const existing = await prisma.service.findUnique({
+    where: {
+      id: service_id,
+    },
+  })
 
-    // Check if any attendance records reference this service
-    const linkedAttendance = db.prepare(`
-            SELECT COUNT(*) as count FROM attendance WHERE service_id = ?
-        `).get(service_id) as { count: number }
+  if (!existing) {
+    throw new Error("Service not found")
+  }
 
-    if(linkedAttendance.count > 0){
-        throw new Error(`Cannot delete this service - It has ${linkedAttendance.count} attendance record(s) linked to it. Delete the attendance records first or contact your administrator`)
-    }
+  const linkedAttendance = await prisma.attendance.count({
+    where: {
+      service_id,
+    },
+  })
 
-    db.prepare('DELETE FROM services WHERE id = ?').run(service_id)
+  if (linkedAttendance > 0) {
+    throw new Error(
+      `Cannot delete this service - It has ${linkedAttendance} attendance record(s) linked to it.`
+    )
+  }
 
-    return true
+  await prisma.service.delete({
+    where: {
+      id: service_id,
+    },
+  })
+
+  return true
 }
 
 // Activate one service
-export const activateService = async (service_id: string) => {
-  const deactivateAllStmt = db.prepare(`
-      UPDATE services
-      SET is_active = 0
-    `)
-
-  const activateOneStmt = db.prepare(`
-        UPDATE services
-        SET is_active = 1
-        WHERE id = ?
-    `)
-
-  const transaction = db.transaction((id: string) => {
-    deactivateAllStmt.run()
-    activateOneStmt.run(id)
+export async function activateService(service_id: string) {
+  const existing = await prisma.service.findUnique({
+    where: {
+      id: service_id,
+    },
   })
 
-  transaction(service_id)
+  if (!existing) {
+    throw new Error("Service not found")
+  }
 
-  return db.prepare(`
-      SELECT * FROM services
-      WHERE id = ?
-  `).get(service_id)
+  // Transaction
+  await prisma.$transaction([
+    prisma.service.updateMany({
+      data: {
+        is_active: false,
+      },
+    }),
+
+    prisma.service.update({
+      where: {
+        id: service_id,
+      },
+
+      data: {
+        is_active: true,
+      },
+    }),
+  ])
+
+  return await prisma.service.findUnique({
+    where: {
+      id: service_id,
+    },
+  })
 }

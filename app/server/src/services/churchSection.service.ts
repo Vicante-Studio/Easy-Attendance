@@ -1,82 +1,122 @@
-import { db } from '../config/database.js'
-import { v4 as uuidv4 } from 'uuid'
+import prisma from "../config/database.js"
+import { v4 as uuidv4 } from "uuid"
 
 // Create Section
-export function createChurchSection(sectionData: { name: string; display_order?: number }) {
-    const id = uuidv4()
-
-    db.prepare(`
-        INSERT INTO sections (id, name, display_order)
-        VALUES (?, ?, ?)
-    `).run(id, sectionData.name, sectionData.display_order ?? 0)
-
-    return db.prepare('SELECT * FROM sections WHERE id = ?').get(id)
+export async function createChurchSection(sectionData: {
+  name: string
+  display_order?: number
+}) {
+  return await prisma.section.create({
+    data: {
+      id: uuidv4(),
+      name: sectionData.name,
+      display_order: sectionData.display_order ?? 0,
+    },
+  })
 }
 
 // Get All Sections
-export function getAllChurchSections() {
-    return db.prepare(`
-        SELECT * FROM sections
-        ORDER BY display_order ASC
-    `).all()
+export async function getAllChurchSections() {
+  return await prisma.section.findMany({
+    orderBy: {
+      display_order: "asc",
+    },
+  })
 }
 
 // Get One Section
-export function getOneChurchSection(section_id: string) {
-    const section = db.prepare('SELECT * FROM sections WHERE id = ?').get(section_id)
+export async function getOneChurchSection(section_id: string) {
+  const section = await prisma.section.findUnique({
+    where: {
+      id: section_id,
+    },
+  })
 
-    if (!section) throw new Error('Section not found')
+  if (!section) {
+    throw new Error("Section not found")
+  }
 
-    return section
+  return section
 }
 
 // Update Section
-export function updateChurchSection(section_id: string, updatedSection: { name?: string; display_order?: number }) {
-    const existing = db.prepare('SELECT * FROM sections WHERE id = ?').get(section_id)
-    if (!existing) throw new Error('Section not found')
+export async function updateChurchSection(
+  section_id: string,
+  updatedSection: {
+    name?: string
+    display_order?: number
+  }
+) {
+  const existing = await prisma.section.findUnique({
+    where: {
+      id: section_id,
+    },
+  })
 
-    db.prepare(`
-        UPDATE sections
-        SET name = ?, display_order = ?
-        WHERE id = ?
-    `).run(
-        updatedSection.name ?? (existing as any).name,
-        updatedSection.display_order ?? (existing as any).display_order,
-        section_id
-    )
+  if (!existing) {
+    throw new Error("Section not found")
+  }
 
-    return db.prepare('SELECT * FROM sections WHERE id = ?').get(section_id)
+  return await prisma.section.update({
+    where: {
+      id: section_id,
+    },
+
+    data: {
+      name: updatedSection.name ?? existing.name,
+      display_order:
+        updatedSection.display_order ?? existing.display_order,
+    },
+  })
 }
 
 // Delete Section
-export function deleteChurchSection(section_id: string) {
-    const existing = db.prepare('SELECT * FROM sections WHERE id = ?').get(section_id)
-    if (!existing) throw new Error('Section not found')
+export async function deleteChurchSection(section_id: string) {
+  const existing = await prisma.section.findUnique({
+    where: {
+      id: section_id,
+    },
+  })
 
-    // Check if any attendance records reference this section
-    const linkedAttendance = db.prepare(`
-            SELECT COUNT(*) as count FROM attendance WHERE section_id = ?
-        `).get(section_id) as { count: number }
+  if (!existing) {
+    throw new Error("Section not found")
+  }
 
-    if(linkedAttendance.count > 0){
-        throw new Error(`Cannot delete this section - It has ${linkedAttendance.count} attendance record(s) linked to it. Delete the attendance records first or contact your administrator`)
-    }
+  const linkedAttendance = await prisma.attendance.count({
+    where: {
+      section_id,
+    },
+  })
 
-    db.prepare('DELETE FROM sections WHERE id = ?').run(section_id)
+  if (linkedAttendance > 0) {
+    throw new Error(
+      `Cannot delete this section - It has ${linkedAttendance} attendance record(s) linked to it.`
+    )
+  }
 
-    return true
+  await prisma.section.delete({
+    where: {
+      id: section_id,
+    },
+  })
+
+  return true
 }
 
 // Get section ID by name
-export const getSectionIdByName = (section_name: string) => {
-  const section = db.prepare(`
-        SELECT id
-        FROM sections
-        WHERE name = ?
-    `).get(section_name) as { id: string } | undefined
+export async function getSectionIdByName(section_name: string) {
+  const section = await prisma.section.findUnique({
+    where: {
+      name: section_name,
+    },
 
-  if(!section){
-    throw new Error('Cannot get section ID')
+    select: {
+      id: true,
+    },
+  })
+
+  if (!section) {
+    throw new Error("Cannot get section ID")
   }
 
   return section.id

@@ -7,26 +7,37 @@ generator client {
 }
 
 model Service {
-  id         String   @id
-  name       String
-  is_active  Boolean  @default(false)
-  created_at DateTime @default(now())
+  id          String       @id
+  name        String
+  is_active   Boolean      @default(false)
+  created_at  DateTime     @default(now())
+
+  attendance  Attendance[]
 }
 
 model Section {
-  id             String   @id
-  name           String   @unique
-  display_order  Int      @default(0)
-  created_at     DateTime @default(now())
+  id             String       @id
+  name           String       @unique
+  display_order  Int          @default(0)
+  created_at     DateTime     @default(now())
+
+  attendance     Attendance[]
 }
 
 model Attendance {
-  id            String   @id
+  id            String    @id
+
   service_id    String
   section_id    String
-  men           Int      @default(0)
-  women         Int      @default(0)
-  children      Int      @default(0)
+
+  men           Int       @default(0)
+  women         Int       @default(0)
+  children      Int       @default(0)
+
   counter_name  String?
-  submitted_at  DateTime @default(now())
+
+  submitted_at  DateTime  @default(now())
+
+  service        Service  @relation(fields: [service_id], references: [id])
+  section        Section  @relation(fields: [section_id], references: [id])
 }

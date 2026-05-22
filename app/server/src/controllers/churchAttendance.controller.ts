@@ -10,7 +10,7 @@ export const handleCreateChurchAttendance = async (req: Request, res: Response) 
     const { service_id, section_name, men, women, children, counter_name } = req.body
 
     // Find Section ID first
-    const section_id = getSectionIdByName(section_name)
+    const section_id = await getSectionIdByName(section_name)
 
     if (!section_id) {
       return res.status(404).json({
@@ -44,7 +44,7 @@ export const handleCreateChurchAttendance = async (req: Request, res: Response) 
 export const handleGetAllChurchAttendance = async (req: Request, res: Response) => {
   try {
 
-      const data = getAllChurchAttendance()
+      const data = await getAllChurchAttendance()
 
       return res.status(200).json(data)
 
@@ -61,7 +61,7 @@ export const handleGetAttendanceByService = async (req: Request, res: Response) 
 
       const { service_id } = req.params
       
-      const data = getAttendanceByService(service_id as string)
+      const data = await getAttendanceByService(service_id as string)
 
       return res.status(200).json(data)
 
@@ -78,7 +78,7 @@ export const handleGetOneChurchAttendance = async (req: Request, res: Response) 
 
       const { attendance_id } = req.params
       
-      const data = getOneChurchAttendance(attendance_id as string)
+      const data = await getOneChurchAttendance(attendance_id as string)
 
       return res.status(200).json(data)
 
@@ -115,7 +115,7 @@ export const handleDeleteChurchAttendance = async (req: Request, res: Response) 
 
       const { attendance_id } = req.params
 
-      deleteChurchAttendance(attendance_id as string)
+      await deleteChurchAttendance(attendance_id as string)
 
       getIO().emit('attendance:updated')
 
@@ -134,7 +134,7 @@ export const handleGetTotalsByService = async (req: Request, res: Response) => {
 
       const { service_id } = req.params
       
-      const data = getTotalsByService(service_id as string)
+      const data = await getTotalsByService(service_id as string)
 
       return res.status(200).json(data)
 
