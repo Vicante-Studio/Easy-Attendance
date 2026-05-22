@@ -1,14 +1,12 @@
 import express from 'express';
 import cors from 'cors'
 import path from 'path';
-import { fileURLToPath } from 'url';
 import churchServiceRouter from './routes/churchService.routes.js'
 import churchAttendanceRouter from './routes/churchAttendance.routes.js'
 import churchSectionRouter from './routes/churchSection.routes.js'
 import csvExportRouter from './routes/csvExport.route.js'
 import localIPRouter from './routes/serverIP.route.js'
 
-const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const app = express();
