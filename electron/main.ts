@@ -1,6 +1,5 @@
 import { app, BrowserWindow } from 'electron'
 import path from 'path'
-import { initDB } from './backend/db'
 
 let mainWindow: BrowserWindow | null = null
 
@@ -23,9 +22,7 @@ function createWindow() {
   mainWindow.loadURL(url)
 }
 
-app.whenReady().then(() => {
-  initDB()
-  
+app.whenReady().then(() => {  
   createWindow()
 })
 
