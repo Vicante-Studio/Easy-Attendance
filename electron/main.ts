@@ -8,9 +8,9 @@ let mainWindow: BrowserWindow | null = null
 let serverProcess: ChildProcess | null = null
 
 function startServer() {
-    const serverPath = app.isPackaged
-        ? path.join(process.resourcesPath, 'app/server/dist/server.js')
-        : path.join(__dirname, '../app/server/dist/server.js')
+    const serverPath = isDev
+        ? path.join(__dirname, '../app/server/dist/server.js')
+        : path.join(process.resourcesPath, 'app/server/dist/server.js')
 
     serverProcess = spawn('node', [serverPath], {
         stdio: 'inherit',
@@ -19,6 +19,12 @@ function startServer() {
 
     serverProcess.on('error', (err) => {
         console.error('Failed to start server:', err)
+        // Show a dialog if node isn't found
+        const { dialog } = require('electron')
+        dialog.showErrorBox(
+            'Setup Required',
+            'Node.js is required to run EasyCounter. Please install Node.js from nodejs.org and restart the app.'
+        )
     })
 }
 
