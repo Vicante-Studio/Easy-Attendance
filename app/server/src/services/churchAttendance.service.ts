@@ -1,115 +1,192 @@
-import db from '../config/database.js'
-import { v4 as uuidv4 } from 'uuid'
+import { prisma } from "../config/prisma.js"
+import { v4 as uuidv4 } from "uuid"
 
 // Create Attendance
-export function createChurchAttendance(attendanceData: {
-    section_id: string
-    service_id: string
-    men: number
-    women: number
-    children: number
-    counter_name?: string
+export async function createChurchAttendance(attendanceData: {
+  section_id: string
+  service_id: string
+  men: number
+  women: number
+  children: number
+  counter_name?: string
 }) {
-    const id = uuidv4()
+  return await prisma.attendance.create({
+    data: {
+      id: uuidv4(),
 
-    db.prepare(`
-        INSERT INTO attendance (id, section_id, service_id, men, women, children, counter_name)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).run(
-        id,
-        attendanceData.section_id,
-        attendanceData.service_id,
-        attendanceData.men,
-        attendanceData.women,
-        attendanceData.children,
-        attendanceData.counter_name ?? null
-    )
+      section_id: attendanceData.section_id,
+      service_id: attendanceData.service_id,
 
-    return db.prepare('SELECT * FROM attendance WHERE id = ?').get(id)
+      men: attendanceData.men,
+      women: attendanceData.women,
+      children: attendanceData.children,
+
+      counter_name: attendanceData.counter_name ?? null,
+    },
+
+    include: {
+      section: true,
+      service: true,
+    },
+  })
 }
 
 // Get All Attendance
-export function getAllChurchAttendance() {
-    return db.prepare(`
-        SELECT 
-            a.*,
-            s.name as section_name
-        FROM attendance a
-        LEFT JOIN sections s ON a.section_id = s.id
-        ORDER BY a.submitted_at DESC
-    `).all()
+export async function getAllChurchAttendance() {
+  return await prisma.attendance.findMany({
+    include: {
+      section: true,
+    },
+
+    orderBy: {
+      submitted_at: "desc",
+    },
+  })
 }
 
 // Get Attendance By Service
-export function getAttendanceByService(service_id: string) {
-    return db.prepare(`
-        SELECT 
-            a.*,
-            s.name as section_name
-        FROM attendance a
-        LEFT JOIN sections s ON a.section_id = s.id
-        WHERE a.service_id = ?
-        ORDER BY a.submitted_at ASC
-    `).all(service_id)
+export async function getAttendanceByService(service_id: string) {
+  return await prisma.attendance.findMany({
+    where: {
+      service_id,
+    },
+
+    include: {
+      section: true,
+    },
+
+    orderBy: {
+      submitted_at: "asc",
+    },
+  })
 }
 
-// Get Totals By Service — aggregated per section
-export function getTotalsByService(service_id: string) {
-    return db.prepare(`
-        SELECT
-            s.name as section_name,
-            SUM(a.men) as men,
-            SUM(a.women) as women,
-            SUM(a.children) as children,
-            SUM(a.men + a.women + a.children) as total
-        FROM attendance a
-        LEFT JOIN sections s ON a.section_id = s.id
-        WHERE a.service_id = ?
-        GROUP BY a.section_id
-        ORDER BY s.display_order ASC
-    `).all(service_id)
+// Get Totals By Service
+export async function getTotalsByService(service_id: string) {
+  const attendance = await prisma.attendance.findMany({
+    where: {
+      service_id,
+    },
+
+    include: {
+      section: true,
+    },
+  })
+
+  const grouped: Record<
+    string,
+    {
+      section_name: string
+      men: number
+      women: number
+      children: number
+      total: number
+      display_order: number
+    }
+  > = {}
+
+  attendance.forEach((record) => {
+    const key = record.section_id
+
+    if (!grouped[key]) {
+      grouped[key] = {
+        section_name: record.section.name,
+        men: 0,
+        women: 0,
+        children: 0,
+        total: 0,
+        display_order: record.section.display_order,
+      }
+    }
+
+    grouped[key].men += record.men
+    grouped[key].women += record.women
+    grouped[key].children += record.children
+    grouped[key].total +=
+      record.men + record.women + record.children
+  })
+
+  return Object.values(grouped).sort(
+    (a, b) => a.display_order - b.display_order
+  )
 }
 
 // Get One Attendance
-export function getOneChurchAttendance(attendance_id: string) {
-    const record = db.prepare('SELECT * FROM attendance WHERE id = ?').get(attendance_id)
+export async function getOneChurchAttendance(
+  attendance_id: string
+) {
+  const record = await prisma.attendance.findUnique({
+    where: {
+      id: attendance_id,
+    },
 
-    if (!record) throw new Error('Attendance record not found')
+    include: {
+      section: true,
+      service: true,
+    },
+  })
 
-    return record
+  if (!record) {
+    throw new Error("Attendance record not found")
+  }
+
+  return record
 }
 
 // Update Attendance
-export function updateChurchAttendance(attendance_id: string, updatedData: {
+export async function updateChurchAttendance(
+  attendance_id: string,
+  updatedData: {
     men?: number
     women?: number
     children?: number
     counter_name?: string
-}) {
-    const existing = db.prepare('SELECT * FROM attendance WHERE id = ?').get(attendance_id) as any
-    if (!existing) throw new Error('Attendance record not found')
+  }
+) {
+  const existing = await prisma.attendance.findUnique({
+    where: {
+      id: attendance_id,
+    },
+  })
 
-    db.prepare(`
-        UPDATE attendance
-        SET men = ?, women = ?, children = ?, counter_name = ?
-        WHERE id = ?
-    `).run(
-        updatedData.men ?? existing.men,
-        updatedData.women ?? existing.women,
-        updatedData.children ?? existing.children,
+  if (!existing) {
+    throw new Error("Attendance record not found")
+  }
+
+  return await prisma.attendance.update({
+    where: {
+      id: attendance_id,
+    },
+
+    data: {
+      men: updatedData.men ?? existing.men,
+      women: updatedData.women ?? existing.women,
+      children: updatedData.children ?? existing.children,
+      counter_name:
         updatedData.counter_name ?? existing.counter_name,
-        attendance_id
-    )
-
-    return db.prepare('SELECT * FROM attendance WHERE id = ?').get(attendance_id)
+    },
+  })
 }
 
 // Delete Attendance
-export function deleteChurchAttendance(attendance_id: string) {
-    const existing = db.prepare('SELECT * FROM attendance WHERE id = ?').get(attendance_id)
-    if (!existing) throw new Error('Attendance record not found')
+export async function deleteChurchAttendance(
+  attendance_id: string
+) {
+  const existing = await prisma.attendance.findUnique({
+    where: {
+      id: attendance_id,
+    },
+  })
 
-    db.prepare('DELETE FROM attendance WHERE id = ?').run(attendance_id)
+  if (!existing) {
+    throw new Error("Attendance record not found")
+  }
 
-    return true
+  await prisma.attendance.delete({
+    where: {
+      id: attendance_id,
+    },
+  })
+
+  return true
 }

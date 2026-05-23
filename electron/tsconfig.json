@@ -1,15 +1,18 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
+    "module": "CommonJS",
     "outDir": "../electron-dist",
-    "rootDir": "./",
+    "rootDir": "..",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
     "ignoreDeprecations": "6.0",
-    "forceConsistentCasingInFileNames": true
   },
-  "include": ["./**/*.ts"]
+  "include": [
+    "../electron/**/*",
+    "../app/server/**/*"
+  ]
 }

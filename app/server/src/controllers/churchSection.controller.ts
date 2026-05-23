@@ -29,7 +29,7 @@ export const handleCreateChurchSection = async (req: Request, res: Response) => 
 export const handleGetAllChurchSection = async (req: Request, res: Response) => {
   try {
 
-      const data = getAllChurchSections()
+      const data = await getAllChurchSections()
 
       return res.status(200).json(data)
 
@@ -49,7 +49,7 @@ export const handleGetOneChurchSection = async (req: Request, res: Response) => 
 
       const { sectionID } = req.params
       
-      const data = getOneChurchSection(sectionID as string)
+      const data = await getOneChurchSection(sectionID as string)
 
       return res.status(200).json(data)
 
@@ -92,7 +92,7 @@ export const handleDeleteChurchSection = async (req: Request, res: Response) => 
 
       const { sectionID } = req.params
 
-      deleteChurchSection(sectionID as string)
+      await deleteChurchSection(sectionID as string)
 
       getIO().emit('sections:updated')
 
