@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createHashRouter, RouterProvider } from 'react-router-dom';
 import App from './App.tsx'
 import CounterPage from './pages/counter/CounterPage.tsx';
 import AdminPage from './pages/admin/AdminPage.tsx';
@@ -13,7 +13,7 @@ import EditServiceForm from './components/features/churchService/EditServiceForm
 import AdminHistory from './pages/history/AdminHistory.tsx';
 import CounterHistory from './pages/history/CounterHistory.tsx';
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: '/',
     element: <App />

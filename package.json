@@ -13,7 +13,7 @@
         "dev:server": "cd app/server && npm run dev",
         "dev:client": "cd app/client && npm run dev",
         "dev:electron": "npm run build:electron && wait-on http://localhost:5173 && cross-env NODE_ENV=development electron .",
-        "build:electron": "esbuild electron/main.ts --bundle --platform=node --target=node22 --external:electron --format=cjs --outfile=electron/main.js",
+        "build:electron": "esbuild electron/main.ts --bundle --platform=node --target=node22 --external:electron --external:@prisma/client --external:.prisma --format=cjs --outfile=electron/main.js",
         "build:client": "cd app/client && npm run build",
         "build:server": "esbuild app/server/server.ts --bundle --platform=node --target=node22 --format=cjs --external:@prisma/client --external:.prisma --external:better-sqlite3 --outfile=app/server/dist/server.cjs",
         "build:all": "cd app/server && npx prisma generate && cd ../.. && npm run build:client && npm run build:server && npm run build:electron",
