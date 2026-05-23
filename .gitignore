@@ -32,3 +32,8 @@ release/
 electron/main.js
 
 app/data/easycounter.db
+
+easycounter.db
+easycounter.db-shm
+easycounter.db-wal
+prisma/easycounter.db
