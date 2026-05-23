@@ -1,8 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
+import './App.css'
 import { createHashRouter, RouterProvider } from 'react-router-dom';
-import App from './App.tsx'
 import CounterPage from './pages/counter/CounterPage.tsx';
 import AdminPage from './pages/admin/AdminPage.tsx';
 import NotFoundPage from './pages/404/NotFoundPage.tsx';
@@ -16,10 +15,6 @@ import CounterHistory from './pages/history/CounterHistory.tsx';
 const router = createHashRouter([
   {
     path: '/',
-    element: <App />
-  },
-  {
-    path: '/counterPage',
     element: <CounterPage />
   },
   {

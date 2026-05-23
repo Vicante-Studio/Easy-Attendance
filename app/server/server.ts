@@ -1,35 +1,29 @@
+// app/server/server.ts
+
 import http from 'http'
 import { Server } from 'socket.io'
 import log from 'electron-log'
-import dotenv from 'dotenv'
-
-// Load .env file
-dotenv.config()
 
 import app from './src/app.js'
-
-const server = http.createServer(app)
-const PORT = process.env.PORT || 8000
+import { initSocket } from './src/sockets/socket.js'
 
 export function startServer() {
-    console.log('SERVER ENTRY STARTED')
+  console.log('SERVER ENTRY STARTED')
 
-    const io = new Server(server, {
-        cors: {
-            origin: '*',
-        },
-    })
+  const server = http.createServer(app)
 
-    io.on('connection', (socket) => {
-        log.info('Socket connected:', socket.id)
-    })
+  initSocket(server)
 
-    console.log('STARTING HTTP SERVER...')
+  const PORT = 3000
 
-    server.listen(PORT, () => {
-        console.log(`SERVER RUNNING ON ${PORT}`)
-        log.info(`Server running at http://localhost:${PORT}`)
-    })
+  console.log('STARTING HTTP SERVER...')
+
+  server.listen(PORT, () => {
+    console.log(`SERVER RUNNING ON ${PORT}`)
+    log.info(`Server running at http://localhost:${PORT}`)
+  })
 }
 
-startServer()
+if (process.env.RUN_SERVER_DIRECTLY === 'true') {
+    startServer()
+}

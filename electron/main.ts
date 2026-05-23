@@ -1,9 +1,7 @@
-import dotenv from 'dotenv'
 import { app, BrowserWindow } from 'electron'
 import path from 'path'
+import fs from 'fs'
 import log from 'electron-log'
-
-dotenv.config({ path: path.join(__dirname, '../app/server/.env') })
 
 import { startServer } from '../app/server/server'
 
@@ -11,46 +9,43 @@ log.catchErrors({ showDialog: true })
 
 let mainWindow: BrowserWindow | null = null
 
-function getAppRoot(): string { 
+function getAppRoot(): string {
   return path.join(__dirname, '..')
 }
 
 function createWindow() {
-    mainWindow = new BrowserWindow({
-        width: 1280,
-        height: 800,
-        webPreferences: {
-            nodeIntegration: false,
-            contextIsolation: true,
-            webSecurity: false
-        },
-    })
+  mainWindow = new BrowserWindow({
+    width: 1280,
+    height: 800,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+    },
+  })
 
-    if (app.isPackaged) {
-        // Load from Express — not from file system
-        const loadURL = () => {
-            mainWindow?.loadURL('http://localhost:3000').catch(() => {
-                log.info('Server not ready, retrying...')
-                setTimeout(loadURL, 4000)
-            })
-        }
-        loadURL()
-    } else {
-        mainWindow.loadURL('http://localhost:5173')
-    }
+  if (app.isPackaged) {
+    const indexPath = path.join(
+      getAppRoot(),
+      'app',
+      'client',
+      'dist',
+      'index.html'
+    )
 
-    mainWindow.on('closed', () => {
-        mainWindow = null
-    })
+    log.info('Loading UI from:', indexPath)
+    log.info('UI file exists:', fs.existsSync(indexPath))
+
+    mainWindow.loadFile(indexPath, { hash: '/adminPage'})
+  } else {
+    mainWindow.loadURL('http://localhost:5173/#/adminPage')
+  }
 }
 
 app.whenReady().then(() => {
   if (app.isPackaged) {
-        // Only start server in production packaged app
-        startServer()
-    }
-    // In dev, server is already running via npm run dev:server
-    createWindow()
+    startServer() // production only — Electron owns the server
+  }
+  createWindow()
 })
 
 app.on('window-all-closed', () => {

@@ -16,7 +16,8 @@ function getLocalIP() {
 }
 
 router.get('/ip', (req, res) => {
-    res.json({ ip: getLocalIP(), port: 8000 })
+    const port = process.env.RUN_SERVER_DIRECTLY === 'true' ? 5173 : 3000
+    res.json({ ip: getLocalIP(), port })
 })
 
 

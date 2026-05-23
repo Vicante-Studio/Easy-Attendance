@@ -1,8 +1,10 @@
 import { io } from 'socket.io-client'
 
-const isDev = import.meta.env.DEV
+const socketURL = import.meta.env.DEV 
+    ? `http://${window.location.hostname}:3000` 
+    : '/'
 
-export const socket = io(isDev ? 'http://localhost:3000': '/', {
+export const socket = io(socketURL, {
     autoConnect: true,
     reconnection: true
 })

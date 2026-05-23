@@ -13,7 +13,7 @@ import { useActiveService } from '@/hooks/useActiveService'
 const AdminPage = () => {
   const navigate = useNavigate()
   const [ip, setIp] = useState<string>('')
-  const [port, setPort] = useState<number>(8000)
+  const [port, setPort] = useState<number>(3000)
 
   const { activeService_id } = useActiveService()
 

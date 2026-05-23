@@ -24,7 +24,8 @@ const AttendanceDashboard = ({ service_id, view }: AttendanceDashboardProps) => 
 
       // Fetch attendance based on what the dashboard view is
       if(view === "active"){
-
+        if (!activeService_id) return
+        
         const { data } = await api.get(`/api/churchAttendance/service/${activeService_id}`)
 
         setData(data)

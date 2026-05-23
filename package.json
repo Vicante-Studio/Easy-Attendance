@@ -10,7 +10,7 @@
     ],
     "scripts": {
         "dev": "concurrently -n SERVER,CLIENT,ELECTRON -c green,blue,yellow \"npm run dev:server\" \"npm run dev:client\" \"npm run dev:electron\"",
-        "dev:server": "cd app/server && npm run dev",
+        "dev:server": "cd app/server && cross-env RUN_SERVER_DIRECTLY=true npm run dev",
         "dev:client": "cd app/client && npm run dev",
         "dev:electron": "npm run build:electron && wait-on http://localhost:5173 && cross-env NODE_ENV=development electron .",
         "build:electron": "esbuild electron/main.ts --bundle --platform=node --target=node22 --external:electron --external:@prisma/client --external:.prisma --format=cjs --outfile=electron/main.js",
@@ -34,6 +34,16 @@
             "node_modules/@prisma/**/*",
             "node_modules/.prisma/**/*",
             "package.json"
+        ],
+        "extraResources": [
+            {
+                "from": "node_modules/.prisma",
+                "to": "node_modules/.prisma"
+            },
+            {
+                "from": "node_modules/@prisma",
+                "to": "node_modules/@prisma"
+            }
         ],
         "win": {
             "target": "nsis"
