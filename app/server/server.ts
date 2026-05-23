@@ -31,3 +31,5 @@ export function startServer() {
         log.info(`Server running at http://localhost:${PORT}`)
     })
 }
+
+startServer()

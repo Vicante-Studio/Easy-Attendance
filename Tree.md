@@ -1,6 +1,3 @@
-
-
-
 ├── .gitignore
 ├── app
 │   ├── client
@@ -11,6 +8,7 @@
 │   │   │   └── components
 │   │   │       └── ui
 │   │   ├── components.json
+│   │   ├── data
 │   │   ├── eslint.config.js
 │   │   ├── index.html
 │   │   ├── package.json
@@ -80,20 +78,27 @@
 │   │   ├── tsconfig.json
 │   │   ├── tsconfig.node.json
 │   │   └── vite.config.ts
-│   ├── data
-│   │   ├── .gitkeep
-│   │   ├── easycounter.db-shm
-│   │   └── easycounter.db-wal
 │   └── server
+│       ├── .gitignore
+│       ├── easycounter.db
 │       ├── jest.config.ts
 │       ├── nodemon.json
 │       ├── package-lock.json
 │       ├── package.json
+│       ├── prisma
+│       │   ├── easycounter.db
+│       │   ├── migrations
+│       │   │   ├── 20260522161612_init
+│       │   │   │   └── migration.sql
+│       │   │   ├── 20260522161953_add_relations
+│       │   │   │   └── migration.sql
+│       │   │   └── migration_lock.toml
+│       │   └── schema.prisma
 │       ├── server.ts
 │       ├── src
 │       │   ├── app.ts
 │       │   ├── config
-│       │   │   └── database.ts
+│       │   │   └── prisma.ts
 │       │   ├── controllers
 │       │   │   ├── churchAttendance.controller.ts
 │       │   │   ├── churchSection.controller.ts
