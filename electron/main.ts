@@ -1,7 +1,6 @@
 import dotenv from 'dotenv'
 import { app, BrowserWindow } from 'electron'
 import path from 'path'
-import fs from 'fs'
 import log from 'electron-log'
 
 log.catchErrors({ showDialog: true })
@@ -13,39 +12,47 @@ function getAppRoot(): string {
 }
 
 function createWindow() {
-  mainWindow = new BrowserWindow({
-    width: 1280,
-    height: 800,
-    webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-    },
-  })
+    mainWindow = new BrowserWindow({
+        width: 1280,
+        height: 800,
+        webPreferences: {
+            nodeIntegration: false,
+            contextIsolation: true,
+            webSecurity: false
+        },
+    })
 
-  if (app.isPackaged) {
-    const indexPath = path.join(getAppRoot(), 'app', 'client', 'dist', 'index.html')
-    log.info('Loading UI from:', indexPath)
-    log.info('UI file exists:', fs.existsSync(indexPath))
-    mainWindow.loadFile(indexPath, { hash: '/adminPage' })
-  } else {
-    mainWindow.loadURL('http://localhost:5173/#/adminPage')
-  }
+    if (app.isPackaged) {
+        const loadURL = () => {
+            mainWindow?.loadURL('http://localhost:3000/#/adminPage').catch(() => {
+                log.info('Server not ready, retrying...')
+                setTimeout(loadURL, 2000)
+            })
+        }
+        loadURL()
+    } else {
+        mainWindow.loadURL('http://localhost:5173/#/adminPage')
+    }
+
+    mainWindow.on('closed', () => {
+        mainWindow = null
+    })
 }
 
 app.whenReady().then(async () => {
-  if (app.isPackaged) {
-    const dbPath = path.join(app.getPath('userData'), 'easycounter.db')
-    process.env.DATABASE_URL = `file:${dbPath}`
-    process.env.PORT = '3000'
+    if (app.isPackaged) {
+        const dbPath = path.join(app.getPath('userData'), 'easycounter.db')
+        process.env.DATABASE_URL = `file:${dbPath}`
+        process.env.PORT = '3000'
+        process.env.RESOURCES_PATH = process.resourcesPath  // ← add this
 
-    // Dynamic import AFTER env vars are set
-    const { startServer } = await import('../app/server/server')
-    startServer()
-  } else {
-    dotenv.config({ path: path.join(__dirname, '../app/server/.env') })
-  }
+        const { startServer } = await import('../app/server/server')
+        await startServer()
+    } else {
+        dotenv.config({ path: path.join(__dirname, '../app/server/.env') })
+    }
 
-  createWindow()
+    createWindow()
 })
 
 app.on('window-all-closed', () => {

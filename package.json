@@ -38,6 +38,10 @@
         ],
         "extraResources": [
             {
+                "from": "app/client/dist",
+                "to": "app/client/dist"
+            },
+            {
                 "from": "node_modules/.prisma",
                 "to": "node_modules/.prisma"
             },
