@@ -3,6 +3,6 @@ import { handleGenerateAttendanceCSV } from '../controllers/csvExport.controller
 
 const router = express.Router()
 
-router.get('/:serviceID', handleGenerateAttendanceCSV)
+router.get('/:service_id', handleGenerateAttendanceCSV)
 
 export default router
