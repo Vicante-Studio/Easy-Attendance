@@ -7,6 +7,8 @@ import type { Attendance } from '@/types/attendanceTypes'
 import type { Service } from '@/types/serviceTypes'
 import { useActiveService } from '@/hooks/useActiveService'
 import { formatDate } from '@/utils/formatDate'
+import { Button } from '@/components/ui/button'
+import { exportAsCsv } from '@/utils/csvExport'
 
 const AttendanceDashboard = ({ service_id, view }: AttendanceDashboardProps) => {
   const [data, setData] = useState<Attendance[]>([])
@@ -62,8 +64,6 @@ const AttendanceDashboard = ({ service_id, view }: AttendanceDashboardProps) => 
   }, [service_id, activeService, activeService_id, view])
 
   const grandTotal = data.reduce((sum, s) => sum + s.men + s.women + s.children, 0)
-
-  console.log(data)
 
   return (
     <main className="p-6 w-full h-full border rounded-md bg-neutral-50">
@@ -128,6 +128,10 @@ const AttendanceDashboard = ({ service_id, view }: AttendanceDashboardProps) => 
           )}
       </TableBody>
       </Table>
+      
+        <Button onClick={() => {exportAsCsv(service_id as string)}}>
+          Export as CSV
+        </Button>
     </main>
   )
 }

@@ -10,7 +10,7 @@ export const generateAttendanceCSV = async (service_id: string): Promise<string>
     }
 
     const rows = (data as any[]).map((record) => ({
-        Section: record.section_name ?? 'Unknown',
+        Section: record.section.name ?? 'Unknown',
         Men: record.men,
         Women: record.women,
         Children: record.children,
