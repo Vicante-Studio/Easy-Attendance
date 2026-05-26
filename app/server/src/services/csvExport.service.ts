@@ -1,9 +1,9 @@
 import { stringify } from 'csv-stringify'
 import { getAttendanceByService } from './churchAttendance.service.js'
 
-export const generateAttendanceCSV = async (serviceID: string): Promise<string> => {
+export const generateAttendanceCSV = async (service_id: string): Promise<string> => {
     
-    const data = await getAttendanceByService(serviceID)
+    const data = await getAttendanceByService(service_id)
 
     if (!data || data.length === 0) {
         throw new Error('No attendance data found for this service')
