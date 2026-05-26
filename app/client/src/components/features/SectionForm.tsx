@@ -37,12 +37,16 @@ const SectionForm = ({ section_id }: SectionFormProps) => {
         try {
 
             if(isEditMode && existingSection){
-                const { data } = await api.put(`/api/churchSection/${section_id}`, values)
+                const { data } = await api.put(`/api/churchSection/${section_id}`, {
+                    name: values.name.toLowerCase().trim()
+                })
 
                 console.log("Section editted:", data)
 
             } else {
-                const response = await api.post('/api/churchSection', values)
+                const response = await api.post('/api/churchSection', {
+                    name: values.name.toLowerCase().trim()
+                })
 
                 console.log("Section Created:", response.data)
             }
@@ -57,11 +61,10 @@ const SectionForm = ({ section_id }: SectionFormProps) => {
 
                     if(axios.isAxiosError(error)){
                         alert(
-                            error?.response?.data?.message ||
-                            "Something went wrong"
+                            `Error: ${error.response?.status}\n${JSON.stringify(error.response?.data, null, 2)}`
                         )
                     } else {
-                        alert('Something went wrong')
+                        alert((error as Error)?.message)
                     }
                 }
     }
@@ -82,13 +85,12 @@ const SectionForm = ({ section_id }: SectionFormProps) => {
             } catch (error) {
 
                 if(axios.isAxiosError(error)){
-                          alert(
-                              error?.response?.data?.message ||
-                              "Something went wrong"
-                          )
-                      } else {
-                          alert('Something went wrong')
-                      }
+                        alert(
+                            `Error: ${error.response?.status}\n${JSON.stringify(error.response?.data, null, 2)}`
+                        )
+                    } else {
+                        alert((error as Error)?.message)
+                    }
                   }
         }
 

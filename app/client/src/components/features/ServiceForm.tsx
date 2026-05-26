@@ -37,11 +37,15 @@ const ServiceForm = ({ service_id }: ServiceFormProps) => {
         try {
 
             if(isEditMode && service_id){
-                const { data } = await api.put(`/api/churchService/${service_id}`, values)
+                const { data } = await api.put(`/api/churchService/${service_id}`, {
+                    name: values.name.toLowerCase().trim()
+                })
 
                 console.log("Section editted:", data)
             } else {
-                const { data } = await api.post('/api/churchService', values)
+                const { data } = await api.post('/api/churchService', {
+                    name: values.name.toLowerCase().trim()
+                })
 
                 console.log("Success:", data)
             }
@@ -56,11 +60,10 @@ const ServiceForm = ({ service_id }: ServiceFormProps) => {
 
                     if(axios.isAxiosError(error)){
                         alert(
-                            error?.response?.data?.message ||
-                            "Something went wrong"
+                            `Error: ${error.response?.status}\n${JSON.stringify(error.response?.data, null, 2)}`
                         )
                     } else {
-                        alert('Something went wrong')
+                        alert((error as Error)?.message)
                     }
                 }
     }
@@ -81,13 +84,12 @@ const ServiceForm = ({ service_id }: ServiceFormProps) => {
             } catch (error) {
 
                 if(axios.isAxiosError(error)){
-                          alert(
-                              error?.response?.data?.message ||
-                              "Something went wrong"
-                          )
-                      } else {
-                          alert('Something went wrong')
-                      }
+                        alert(
+                            `Error: ${error.response?.status}\n${JSON.stringify(error.response?.data, null, 2)}`
+                        )
+                    } else {
+                        alert((error as Error)?.message)
+                    }
                   }
         }
 

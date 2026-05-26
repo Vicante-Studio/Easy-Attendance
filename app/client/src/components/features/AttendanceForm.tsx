@@ -58,11 +58,10 @@ const AttendanceForm = () => {
 
                     if(axios.isAxiosError(error)){
                         alert(
-                            error?.response?.data?.message ||
-                            "Something went wrong"
+                            `Error: ${error.response?.status}\n${JSON.stringify(error.response?.data, null, 2)}`
                         )
                     } else {
-                        alert('Something went wrong')
+                        alert((error as Error)?.message)
                     }
                 }
     }
