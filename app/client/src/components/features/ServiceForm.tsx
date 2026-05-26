@@ -9,6 +9,7 @@ import { api } from '@/lib/api'
 import { useNavigate } from 'react-router'
 import type { Service, ServiceFormProps } from '@/types/serviceTypes'
 import { useEffect, useState } from 'react'
+import { ArrowLeft } from 'lucide-react'
 
 const formSchema = z.object({
     name: z.string().min(1, 'Section name is required')
@@ -73,7 +74,7 @@ const ServiceForm = ({ service_id }: ServiceFormProps) => {
 
         const fetchSection = async () => {
             try {
-                const { data } = await api.get(`/api/churchSection/${service_id}`)
+                const { data } = await api.get(`/api/churchService/${service_id}`)
 
                 setExistingService(data)
 
@@ -113,6 +114,10 @@ const ServiceForm = ({ service_id }: ServiceFormProps) => {
                 }
             </Button>
         </form>
+        <Button onClick={() => navigate('/adminPage')}>
+            <ArrowLeft size={24} />
+            Return Back
+        </Button>
     </main>
   )
 }

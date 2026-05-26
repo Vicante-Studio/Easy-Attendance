@@ -1,6 +1,5 @@
 import { useParams } from 'react-router'
 import SectionForm from '../SectionForm'
-
 const EditSectionForm = () => {
   const { section_id } =useParams()
   
