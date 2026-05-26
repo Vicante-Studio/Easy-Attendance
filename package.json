@@ -21,7 +21,7 @@
     },
     "build": {
         "appId": "com.easyattendance.app",
-        "productName": "EasyAttendance",
+        "productName": "Easy Attendance",
         "asar": false,
         "directories": {
             "output": "release"
