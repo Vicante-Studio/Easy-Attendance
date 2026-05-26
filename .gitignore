@@ -24,16 +24,16 @@ dist-ssr
 *.sw?
 
 .env
-data/easycounter.db
+data/easy-attendance.db
 
 # Electron
 electron-dist/
 release/
 electron/main.js
 
-app/data/easycounter.db
+app/data/easy-attendance.db
 
-easycounter.db
-easycounter.db-shm
-easycounter.db-wal
-prisma/easycounter.db
+easy-attendance.db
+easy-attendance.db-shm
+easy-attendance.db-wal
+prisma/easy-attendance.db
