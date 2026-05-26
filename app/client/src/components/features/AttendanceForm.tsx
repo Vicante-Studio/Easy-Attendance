@@ -40,7 +40,7 @@ const AttendanceForm = () => {
         try {
             const response = await api.post('/api/churchAttendance', {
                 service_id: activeService?.id,
-                section_name: values.section,
+                section_name: values.section.toLowerCase().trim(),
                 men: values.men,
                 women: values.women,
                 children: values.children,

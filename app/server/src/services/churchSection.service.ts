@@ -105,12 +105,9 @@ export async function deleteChurchSection(section_id: string) {
 
 // Get section ID by name
 export async function getSectionIdByName(section_name: string) {
-  const section = await prisma.section.findFirst({
+  const section = await prisma.section.findUnique({
     where: {
-      name: {
-        equals: section_name,
-        mode: 'insensitive'
-      }
+      name: section_name,
     },
 
     select: {
