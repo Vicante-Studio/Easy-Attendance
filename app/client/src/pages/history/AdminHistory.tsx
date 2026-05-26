@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import AttendanceDashboard from '../admin/AttendanceDashboard'
+import AttendanceDashboard from '../../components/features/dashboards/AttendanceDashboard'
 import type { Service } from '@/types/serviceTypes'
 import { api } from '@/lib/api'
 import { socket } from '@/lib/socket'

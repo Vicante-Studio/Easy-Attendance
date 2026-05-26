@@ -1,7 +1,7 @@
 import { api } from '@/lib/api'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import AttendanceDashboard from './AttendanceDashboard'
+import AttendanceDashboard from '../../components/features/dashboards/AttendanceDashboard'
 import SectionDashboard from '@/components/features/dashboards/SectionDashboard'
 import ServiceDashboard from '@/components/features/dashboards/ServiceDashboard'
 import { Button } from '@/components/ui/button'
