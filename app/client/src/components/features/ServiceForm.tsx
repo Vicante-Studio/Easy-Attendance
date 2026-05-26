@@ -38,15 +38,11 @@ const ServiceForm = ({ service_id }: ServiceFormProps) => {
         try {
 
             if(isEditMode && service_id){
-                const { data } = await api.put(`/api/churchService/${service_id}`, {
-                    name: values.name.toLowerCase().trim()
-                })
+                const { data } = await api.put(`/api/churchService/${service_id}`, values)
 
                 console.log("Section editted:", data)
             } else {
-                const { data } = await api.post('/api/churchService', {
-                    name: values.name.toLowerCase().trim()
-                })
+                const { data } = await api.post('/api/churchService', values)
 
                 console.log("Success:", data)
             }
