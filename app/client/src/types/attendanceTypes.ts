@@ -1,3 +1,5 @@
+import type { Section } from './sectionTypes'
+
 export interface Attendance {
   id: string
   section_id: string
@@ -6,6 +8,7 @@ export interface Attendance {
   women: number
   children: number
   counter_name?: string
+  section: Section
 }
 
 export interface AttendanceDashboardProps {

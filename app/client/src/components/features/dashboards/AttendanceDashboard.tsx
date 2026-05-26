@@ -63,6 +63,8 @@ const AttendanceDashboard = ({ service_id, view }: AttendanceDashboardProps) => 
 
   const grandTotal = data.reduce((sum, s) => sum + s.men + s.women + s.children, 0)
 
+  console.log(data)
+
   return (
     <main className="p-6 w-full h-full border rounded-md bg-neutral-50">
       <div className='mb-6 text-center w-full justify-between flex flex-wrap '>
@@ -115,7 +117,7 @@ const AttendanceDashboard = ({ service_id, view }: AttendanceDashboardProps) => 
                   return (
                       <TableRow key={section.id}>
                           <TableCell>{section.counter_name ?? '—'}</TableCell>
-                          <TableCell>{section.section_name}</TableCell>
+                          <TableCell>{section.section.name}</TableCell>
                           <TableCell>{section.men}</TableCell>
                           <TableCell>{section.women}</TableCell>
                           <TableCell>{section.children}</TableCell>
