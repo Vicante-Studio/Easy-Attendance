@@ -1,32 +1,31 @@
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button } from '../ui/button'
-import { Field, FieldLabel, FieldError } from '../ui/form/field'
-import { Input } from '../ui/form/input'
+import { Button } from '../../ui/button'
+import { Field, FieldLabel, FieldError } from '../../ui/form/field'
+import { Input } from '../../ui/form/input'
 import axios from 'axios'
 import { api } from '@/lib/api'
 import { useNavigate } from 'react-router'
-import type { Service, ServiceFormProps } from '@/types/serviceTypes'
+import type { Section,  SectionFormProps } from '@/types/sectionTypes'
 import { useEffect, useState } from 'react'
-import { ArrowLeft } from 'lucide-react'
 
 const formSchema = z.object({
-    name: z.string().min(1, 'Section name is required')
+    name: z.string().min(1, 'Section name is required'),
 })
 
 type FormValues = z.infer<typeof formSchema>
 
-const ServiceForm = ({ service_id }: ServiceFormProps) => {
-   const navigate = useNavigate()
-   const [existingService, setExistingService] = useState<Service | null>(null)
+const SectionForm = ({ section_id }: SectionFormProps) => {
+    const navigate = useNavigate()
+    const [existingSection, setExistingSection] = useState<Section | null>(null)
 
-   const isEditMode = !!existingService
+    const isEditMode =  !!existingSection
 
    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: '',
+        name: ''
         },
     })
 
@@ -37,16 +36,21 @@ const ServiceForm = ({ service_id }: ServiceFormProps) => {
     const onSubmit = async (values: FormValues) => {
         try {
 
-            if(isEditMode && service_id){
-                const { data } = await api.put(`/api/churchService/${service_id}`, values)
+            if(isEditMode && existingSection){
+                const { data } = await api.put(`/api/churchSection/${section_id}`, {
+                    name: values.name.toLowerCase().trim()
+                })
 
                 console.log("Section editted:", data)
-            } else {
-                const { data } = await api.post('/api/churchService', values)
 
-                console.log("Success:", data)
+            } else {
+                const response = await api.post('/api/churchSection', {
+                    name: values.name.toLowerCase().trim()
+                })
+
+                console.log("Section Created:", response.data)
             }
-            
+
             resetForm()
 
             // TODO: Add success message card before navigating to adminPage
@@ -66,13 +70,13 @@ const ServiceForm = ({ service_id }: ServiceFormProps) => {
     }
 
     useEffect(() => {
-        if(!service_id) return
+        if(!section_id) return
 
         const fetchSection = async () => {
             try {
-                const { data } = await api.get(`/api/churchService/${service_id}`)
+                const { data } = await api.get(`/api/churchSection/${section_id}`)
 
-                setExistingService(data)
+                setExistingSection(data)
 
                 reset({
                     name: data.name ?? ''
@@ -91,7 +95,7 @@ const ServiceForm = ({ service_id }: ServiceFormProps) => {
         }
 
         fetchSection()
-    }, [service_id, reset])
+    }, [section_id, reset])
 
   return (
     <main className="w-full max-w-md mx-auto px-4 py-10">
@@ -99,23 +103,24 @@ const ServiceForm = ({ service_id }: ServiceFormProps) => {
         <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-6'>
 
             <Field>
-                <FieldLabel>Service Name</FieldLabel>
-                <Input placeholder="Input Service name" {...register('name')} className='h-12' />
+                <FieldLabel>Section Name</FieldLabel>
+                <Input placeholder="Input section name" {...register('name')} className='h-12' />
                 <FieldError errors={[errors.name]} />
             </Field>
 
+
             <Button type='submit' className="h-12 mt-4" disabled={isSubmitting}>
                 {
-                    isSubmitting ? 'Creating...' : 'Create Service'
+                    isSubmitting ? 'Submitting...' : 'Submit Section Name'
                 }
             </Button>
         </form>
+
         <Button onClick={() => navigate('/adminPage')}>
-            <ArrowLeft size={24} />
             Return Back
         </Button>
     </main>
   )
 }
 
-export default ServiceForm
+export default SectionForm

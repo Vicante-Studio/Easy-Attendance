@@ -1,5 +1,5 @@
 import { useParams } from 'react-router'
-import SectionForm from '../SectionForm'
+import SectionForm from '../forms/SectionForm'
 const EditSectionForm = () => {
   const { section_id } =useParams()
   

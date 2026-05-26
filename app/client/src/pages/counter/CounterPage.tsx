@@ -1,4 +1,4 @@
-import AttendanceForm from '@/components/features/AttendanceForm'
+import AttendanceForm from '@/components/features/forms/AttendanceForm'
 import { useActiveService } from '@/hooks/useActiveService'
 import { formatDate } from '@/utils/formatDate'
 

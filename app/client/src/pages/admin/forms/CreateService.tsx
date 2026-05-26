@@ -1,4 +1,4 @@
-import ServiceForm from '@/components/features/ServiceForm'
+import ServiceForm from '@/components/features/forms/ServiceForm'
 
 const CreateServicePage = () => {
 

@@ -1,4 +1,4 @@
-import SectionForm from '@/components/features/SectionForm'
+import SectionForm from '@/components/features/forms/SectionForm'
 
 const CreateSectionPage = () => {
 

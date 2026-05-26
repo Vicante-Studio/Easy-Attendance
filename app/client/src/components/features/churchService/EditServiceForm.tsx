@@ -1,5 +1,5 @@
 import { useParams } from 'react-router'
-import ServiceForm from '../ServiceForm'
+import ServiceForm from '../forms/ServiceForm'
 
 const EditServiceForm = () => {
   const { service_id } =useParams()
