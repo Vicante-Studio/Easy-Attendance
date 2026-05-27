@@ -53,6 +53,7 @@ function createWindow() {
     mainWindow = new BrowserWindow({
         width: 1280,
         height: 800,
+        icon: path.join(getAppRoot(), '../build/EasyAttendanceIcon.png'),
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,

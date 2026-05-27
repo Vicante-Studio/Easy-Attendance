@@ -28,6 +28,7 @@
         },
         "files": [
             "electron/**/*",
+            "build/**/*",
             "app/server/dist/**/*",
             "app/client/dist/**/*",
             "app/server/prisma/**/*",
