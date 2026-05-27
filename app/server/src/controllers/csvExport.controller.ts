@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 import { prisma } from '../config/prisma.js'
 import { generateAttendanceCSV } from '../services/csvExport.service.js'
-import { getOneService } from '../services/churchService.service.js'
 
 // Generate Attendance CSV
 export const handleGenerateAttendanceCSV = async (req: Request, res: Response) => {
@@ -21,8 +20,6 @@ export const handleGenerateAttendanceCSV = async (req: Request, res: Response) =
 
     // Generate CSV from local DB (Prisma-backed service)
     const csv = await generateAttendanceCSV(service_id as string)
-
-    const { name } = await getOneService(service_id as string)
 
     // Build filename safely
     const filename = service

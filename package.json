@@ -58,10 +58,21 @@
             }
         ],
         "win": {
-            "target": "nsis"
+            "target": "nsis",
+            "icon": "build/EasyAttendanceIcon.ico"
         },
         "mac": {
-            "target": "dmg"
+            "target": "dmg",
+            "icon": "build/EasyAttendanceIcon.icns"
+        },
+        "linux": {
+            "target": "AppImage",
+            "icon": "build/EasyAttendanceIcon.png"
+        },
+        "nsis": {
+            "installerIcon": "build/EasyAttendanceIcon.ico",
+            "uninstallerIcon": "build/EasyAttendanceIcon.ico",
+            "installerHeaderIcon": "build/EasyAttendanceIcon.ico"
         }
     },
     "devDependencies": {
