@@ -1,6 +1,6 @@
 {
     "name": "easy-attendance",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "private": true,
     "description": "Church attendance counter — LAN desktop app",
     "main": "electron/main.js",
