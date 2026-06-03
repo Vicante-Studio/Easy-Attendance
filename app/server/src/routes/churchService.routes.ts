@@ -13,7 +13,7 @@ router.post('/', handleCreateService)
 
 router.put('/:service_id', handleUpdateService)
 
-router.put('/activate/:service_id', handleActivateService)
+router.patch('/activate/:service_id', handleActivateService)
 
 router.delete('/:service_id', handleDeleteService)
 
