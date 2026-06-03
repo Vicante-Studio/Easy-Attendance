@@ -37,3 +37,11 @@ easy-attendance.db
 easy-attendance.db-shm
 easy-attendance.db-wal
 prisma/easy-attendance.db
+
+node_modules
+# Keep environment variables out of version control
+.env
+
+/generated/prisma
+*.db
+*.db-journal
